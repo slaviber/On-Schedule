@@ -1,7 +1,8 @@
 # On-Schedule
 apiary: docs.onschedule.apiary.io
 
-Users: the registered users than can use the site
+Users: 
+  the registered users than can use the site
 
 Groups: 
   users can create multiple groups
