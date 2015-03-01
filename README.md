@@ -5,9 +5,9 @@ Users:
   the registered users than can use the site
 
 Groups: 
-  users can create multiple groups
-  there are administrators and participants in a single group and only the administrators can modify it
-  groups can be public or private
+> users can create multiple groups
+> there are administrators and participants in a single group and only the administrators can modify it
+> groups can be public or private
 
 Schedules: 
   a group can have multiple schedules
