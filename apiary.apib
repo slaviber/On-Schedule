@@ -1,0 +1,307 @@
+FORMAT: 1A
+
+# On-Schedule
+Creating API for the On-Schedule online Scheduling system
+
+
+# Group Groups
+The user groups that share a same schedule
+
+## Groups [/Groups]
+
+### List all groups [GET]
+
++ Response 200 (application/json)
+
+        [{
+          "uid": 1, 
+          "description": "Let's finish this project!", 
+          "isPrivate" : false,
+          "creator" : "Ivan Petrov",
+          "participants" : [
+                {"name" :  "Anna Nikolova", "canModerate" : false},
+                {"name" :  "Angel Bozhinov", "canModerate" : true},
+                {"name" :  "Anelia Ninova", "canModerate" : false}
+            ]
+        }, {
+          "uid": 2, 
+          "description": "Learning English part II", 
+          "isPrivate" : false,
+          "creator" : "Ivaylo Zlatanov",
+          "participants" : [
+                {"name" :  "Lilia Petrova", "canModerate" : true},
+                {"name" :  "Ivanka Blagoeva", "canModerate" : false},
+                {"name" :  "Emil Shterev", "canModerate" : false}
+            ]
+        }]
+        
+### Create a group [POST]
+
++ Request (application/json)
+
+        { 
+        "description" : "Cleaning Dirt Challenge",
+          "isPrivate" : true,
+          "creator" : "Vladimir Nedelchev",
+        }
+
++ Response 201 (application/json)
+
+        { "uid": 3 }
+        
+## Participants [/Groups/{uid}]
+
+### Modify participants [PUT]
+
++ Parameters
+    + uid (required, number, `3`) ... The group uid to modify
+
++ Request (application/json)
+
+        { 
+        "uid" : 3,
+          "shouldRemove" : false,
+          "participants" : [{"name" : "Chavdar Rangelov", "canModerate" : false}]
+        }
+
++ Response 201 (application/json)
+
+          {
+          "uid": 3, 
+          "description" : "Cleaning Dirt Challenge", 
+          "isPrivate" : true,
+          "creator" : "Vladimir Nedelchev",
+          "participants" : [
+                {"name" : "Chavdar Rangelov", "canModerate" : false}
+            ]
+           }
+            
+### Remove all + group [DELETE]
++ Response 204
+
+## Requests [/Groups/{uid}/Requests]
+
+### Create participation request [POST]
+
++ Parameters
+    + uid (required, number, `3`) ... public group number
+    
++ Request (application/json)
+
+        { "uid" : 3, "message" : "Hello, may I join, please?" }
+
++ Response 201 (application/json)
+
+        { "uid" : 3, "requestErrorCode" : 0}
+    
+# Group Schedules
+The created schedules
+
+## Schedules [/Schedules]
+
+### List all schedules [GET]
+
++ Response 200 (application/json)
+
+        [{
+            "uid": 1,
+            "creationDate" : "2012/03/07",
+            "isFinalized" : false,
+            "group_uid" : 1,
+            "associatedTaskIds" : [1, 5, 7, 9],
+            "description" : "leather crafting",
+            "show_report" : false
+        }, {
+            "uid": 2,
+            "creationDate" : "2012/05/07",
+            "isFinalized" : true,
+            "group_uid" : 1,
+            "associatedTaskIds" : [2, 3, 4, 6],
+            "description" : "painting",
+            "show_report" : false
+        }, {
+            "uid": 3,
+            "creationDate" : "2014/01/01",
+            "isFinalized" : true,
+            "group_uid" : 2,
+            "associatedTaskIds" : [8],
+            "description" : "practicing verbs",
+            "show_report" : true
+        }]
+        
+### Create a Schedule [POST]
+
++ Request (application/json)
+
+        { 
+            "group_uid" : 3,
+            "description" : "Cleaning on stages"
+        }
+
++ Response 201 (application/json)
+
+        { "uid": 4 }
+        
+### Modify a Schedule [PUT]
+
++ Request (application/json)
+
+        { 
+            "uid" : 4,
+            "isFinalized" : true,
+            "description" : "Finally, cleaning has finished!",
+            "show_report" : true
+        }
+        
++ Response 201 (application/json)
+
+        { "uid": 4, "updateErrorCode" : 0 }
+        
+## Scheduled tasks [/Schedules/{uid}]
+
++ Parameters
+    + uid (required, number, `3`) ... schedule number
+
+### Link with task [PUT]
+
++ Request (application/json)
+
+        { 
+            "associatedTaskId" : 10,
+        }
+        
++ Response 201 (application/json)
+
+        { "uid": 3, "LinkErrorCode" : 0 }
+        
+# Group Tasks
+All tasks on the server
+
+## Tasks [/Tasks]
+
+### List all tasks [GET]
+
++ Response 200 (application/json)
+
+        [{
+            "uid": 1,
+            "derivedFrom" : 0,
+            "beginDate" : "2012/03/07",
+            "plannedEndDate" : "2012/03/08",
+            "description" : "shaping",
+            "endDate" : "2012/03/09",
+            "taskOwner" : "Anna Nikolova"
+        }, {
+            "uid": 2,
+            "derivedFrom" : 0,
+            "beginDate" : "2012/05/07",
+            "plannedEndDate" : "2012/05/08",
+            "description" : "coloring",
+            "endDate" : "2012/03/08",
+            "taskOwner" : "Anelia Ninova"
+        }, {
+            "uid": 3,
+            "derivedFrom" : 2,
+            "beginDate" : "2012/05/08",
+            "plannedEndDate" : "2012/05/09",
+            "description" : "glancing",
+            "endDate" : "2012/03/09",
+            "taskOwner" : "Anelia Ninova"
+        }, {
+            "uid": 4,
+            "derivedFrom" : 3,
+            "beginDate" : "2012/05/09",
+            "plannedEndDate" : "2012/05/10",
+            "description" : "washing",
+            "endDate" : "2012/03/10",
+            "taskOwner" : "Anelia Ninova"
+        }, {
+            "uid": 5,
+            "derivedFrom" : 1,
+            "beginDate" : "2012/03/08",
+            "plannedEndDate" : "2012/03/09",
+            "description" : "carving",
+            "endDate" : "2012/03/15",
+            "taskOwner" : "Anna Nikolova"
+        }, {
+            "uid": 6,
+            "derivedFrom" : 4,
+            "beginDate" : "2012/05/11",
+            "plannedEndDate" : "2012/05/12",
+            "description" : " painting second layer",
+            "endDate" : "2012/03/11",
+            "taskOwner" : "Anelia Ninova"
+        }, {
+            "uid": 7,
+            "derivedFrom" : 5,
+            "beginDate" : "2012/03/09",
+            "plannedEndDate" : "2012/03/08",
+            "description" : "polishing",
+            "endDate" : "2012/03/20",
+            "taskOwner" : "Anna Nikolova"
+        }, {
+            "uid": 8,
+            "derivedFrom" : 0,
+            "beginDate" : "2014/01/01",
+            "plannedEndDate" : "2014/01/05",
+            "description" : "practicing with Ivanka Blagoeva",
+            "endDate" : "2014/01/04",
+            "taskOwner" : "Emil Shterev"
+        }, {
+            "uid": 9,
+            "derivedFrom" : 7,
+            "beginDate" : "2012/03/10",
+            "plannedEndDate" : "2012/03/08",
+            "description" : "shaping",
+            "endDate" : "pending",
+            "taskOwner" : "Anna Nikolova"
+        }]
+        
+### Add task [POST]
+        
++ Request (application/json)
+
+        { 
+            "beginDate" : "2014/10/10",
+            "plannedEndDate" : "2014/11/10",
+            "description" : "whipping",
+            "endDate" : "pending",
+            "taskOwner" : "Chavdar Rangelov"
+        }
+
++ Response 201 (application/json)
+
+        { "uid": 10 }
+        
+### Change task status [PUT]
+        
++ Request (application/json)
+
+        { 
+            "uid": 10,
+            "derivedFrom" : 0,
+            "description" : "whipping",
+            "endDate" : "2014/11/00",
+        }
+
++ Response 201 (application/json)
+
+        { "uid": 10, "updateErrorCode" : 0 }
+        
+# Group Reports
+Generated reports
+        
+## Reports [/Reports]
+
+### List all reports [GET]
+
++ Response 200 (application/json)
+
+        [{
+            "uid": 1,
+            "reportedSchedule" : 3,
+            "file" : "/genrep1.txt",
+            "ReportDate" : "2014/11/11",
+        }]
+        
+        
