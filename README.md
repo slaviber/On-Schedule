@@ -1,4 +1,7 @@
 # On-Schedule
+
+## Online scheduling system
+
 apiary: docs.onschedule.apiary.io
 
 Users: 
