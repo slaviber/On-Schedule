@@ -3,10 +3,20 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="css/onsched.css">
     <title></title>
 </head>
 <body>
+    <header>
+        On Schedule
+        <input class="clickable visible" type="button" value="Log in" id="log" onclick="click_log_in();"/>
+    </header>
 
+    <div id="login-box" , class="hidden">
+        <p id="login-text"> Login </p>
+        <div id="log-menu"></div>
+        <input class="clickable" type="button" value="Log In" id="log-begin" />
+    </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <!--<script src="js/bootstrap.min.js"></script>-->

@@ -296,43 +296,74 @@ function get_all_reports() {
     return temp_reports;
 }
 
+function get_all_users(callback) {
+    $.ajax({
+        type: "GET",
+        url: mock + "/Users",
+        success: function (users) {
+            callback(users);
+        }
+    });
+}
 
-var t, uid, update, prequest, sch, add, upd, link, tsk, cre, change, rep, gt;
+function click_log_in() {
+    get_all_users(log_in_menu);
+}
+
+function log_in_menu(ids) {
+    console.log(ids);
+    update_page_visibility();
+    var v = $("<select>", { id: "login-button" } );
+    $.each(ids, function () {
+        v.append($("<option>", { value: this.uid, html: this.name }));
+    });
+    $('#login-box').attr("class", "visible");
+    $('#log-menu').html(v);
+}
+
+function update_page_visibility() {
+    $('#login-box').attr("class", "hidden");
+    $('#log').attr("class", "hidden");
+}
+
+
+//var t, uid, update, prequest, sch, add, upd, link, tsk, cre, change, rep, gt;
 $(document).ready(function () {
     "use strict"
 
-    t = get_all_groups();
-    uid = post_group();
-    update = put_participants(3);
-    delete_group(3);
-    prequest = post_request(3);
-    sch = get_all_schedules();
-    add = post_schedule();
-    upd = put_schedule();
-    link = put_task(3);
-    delete_schedule(3);
-    tsk = get_all_tasks();
-    cre = post_task();
-    change = mod_task(3);
-    gt = get_task(3);
-    delete_task(3);
-    rep = get_all_reports();
+    //t = get_all_groups();
+    //uid = post_group();
+    //update = put_participants(3);
+    //delete_group(3);
+    //prequest = post_request(3);
+    //sch = get_all_schedules();
+    //add = post_schedule();
+    //upd = put_schedule();
+    //link = put_task(3);
+    //delete_schedule(3);
+    //tsk = get_all_tasks();
+    //cre = post_task();
+    //change = mod_task(3);
+    //gt = get_task(3);
+    //delete_task(3);
+    //rep = get_all_reports();
+
 
 });
 
-$(document).ajaxStop(function () {
-    console.log(t);
-    console.log(uid);
-    console.log(update);
-    if (prequest.uid == 3 && prequest.code == CODE_OK) alert("SENT: OK!");
-    else alert("SENT: FAIL!");
-    console.log(sch);
-    console.log(add);
-    console.log(upd);
-    console.log(link);
-    console.log(tsk);
-    console.log(cre);
-    console.log(change);
-    console.log(rep);
-    console.log(gt);
-});
+//$(document).ajaxStop(function () {
+//    console.log(t);
+//    console.log(uid);
+//    console.log(update);
+//    if (prequest.uid == 3 && prequest.code == CODE_OK) alert("SENT: OK!");
+//    else alert("SENT: FAIL!");
+//    console.log(sch);
+//    console.log(add);
+//    console.log(upd);
+//    console.log(link);
+//    console.log(tsk);
+//    console.log(cre);
+//    console.log(change);
+//    console.log(rep);
+//    console.log(gt);
+//});
