@@ -3,6 +3,44 @@ FORMAT: 1A
 # On-Schedule
 Creating API for the On-Schedule online Scheduling system
 
+# Group Users
+The user IDs and their respective names
+
+## Users [/Users]
+
+###List all users [GET]
+
++ Response 200 (application/json)
+
+        [{
+            "uid" : 1,
+            "name" : "Anna Nikolova"
+        }, {
+            "uid" : 2,
+            "name" : "Angel Bozhinov"
+        }, {
+            "uid" : 3,
+            "name" : "Anelia Ninova"
+        }, {
+            "uid" : 4,
+            "name" : "Lilia Petrova"
+        }, {
+            "uid" : 5,
+            "name" : "Ivanka Blagoeva"
+        }, {
+            "uid" : 6,
+            "name" : "Emil Shterev"
+        }, {
+            "uid" : 7,
+            "name" : "Vladimir Nedelchev"
+        }, {
+            "uid" : 8,
+            "name" : "Chavdar Rangelov"
+        }, {
+            "uid" : 9,
+            "name" : "Anna Nikolova"
+        }]
+
 
 # Group Groups
 The user groups that share a same schedule
@@ -19,9 +57,9 @@ The user groups that share a same schedule
           "isPrivate" : false,
           "creator" : "Ivan Petrov",
           "participants" : [
-                {"name" :  "Anna Nikolova", "canModerate" : false},
-                {"name" :  "Angel Bozhinov", "canModerate" : true},
-                {"name" :  "Anelia Ninova", "canModerate" : false}
+                {"uid" :  1, "canModerate" : false},
+                {"uid" :  2, "canModerate" : true},
+                {"uid" :  3, "canModerate" : false}
             ]
         }, {
           "uid": 2, 
@@ -29,9 +67,9 @@ The user groups that share a same schedule
           "isPrivate" : false,
           "creator" : "Ivaylo Zlatanov",
           "participants" : [
-                {"name" :  "Lilia Petrova", "canModerate" : true},
-                {"name" :  "Ivanka Blagoeva", "canModerate" : false},
-                {"name" :  "Emil Shterev", "canModerate" : false}
+                {"uid" :  4, "canModerate" : true},
+                {"uid" :  5, "canModerate" : false},
+                {"uid" :  6, "canModerate" : false}
             ]
         }]
         
@@ -42,7 +80,7 @@ The user groups that share a same schedule
         { 
         "description" : "Cleaning Dirt Challenge",
           "isPrivate" : true,
-          "creator" : "Vladimir Nedelchev",
+          "creator" : 7,
         }
 
 + Response 201 (application/json)
@@ -60,7 +98,7 @@ The user groups that share a same schedule
 
         { 
           "shouldRemove" : false,
-          "participants" : [{"name" : "Chavdar Rangelov", "canModerate" : false}]
+          "participants" : [{"uid" : 8, "canModerate" : false}]
         }
 
 + Response 201 (application/json)
@@ -68,9 +106,9 @@ The user groups that share a same schedule
           {
           "description" : "Cleaning Dirt Challenge", 
           "isPrivate" : true,
-          "creator" : "Vladimir Nedelchev",
+          "creator" : 7,
           "participants" : [
-                {"name" : "Chavdar Rangelov", "canModerate" : false}
+                {"uid" : 8, "canModerate" : false}
             ]
            }
             
@@ -192,7 +230,7 @@ All tasks on the server
             "plannedEndDate" : "2012/03/08",
             "description" : "shaping",
             "endDate" : "2012/03/09",
-            "taskOwner" : "Anna Nikolova"
+            "taskOwner" : 1
         }, {
             "uid": 2,
             "derivedFrom" : 0,
@@ -200,7 +238,7 @@ All tasks on the server
             "plannedEndDate" : "2012/05/08",
             "description" : "coloring",
             "endDate" : "2012/03/08",
-            "taskOwner" : "Anelia Ninova"
+            "taskOwner" : 3
         }, {
             "uid": 3,
             "derivedFrom" : 2,
@@ -208,7 +246,7 @@ All tasks on the server
             "plannedEndDate" : "2012/05/09",
             "description" : "glancing",
             "endDate" : "2012/03/09",
-            "taskOwner" : "Anelia Ninova"
+            "taskOwner" : 3
         }, {
             "uid": 4,
             "derivedFrom" : 3,
@@ -216,7 +254,7 @@ All tasks on the server
             "plannedEndDate" : "2012/05/10",
             "description" : "washing",
             "endDate" : "2012/03/10",
-            "taskOwner" : "Anelia Ninova"
+            "taskOwner" : 3
         }, {
             "uid": 5,
             "derivedFrom" : 1,
@@ -224,7 +262,7 @@ All tasks on the server
             "plannedEndDate" : "2012/03/09",
             "description" : "carving",
             "endDate" : "2012/03/15",
-            "taskOwner" : "Anna Nikolova"
+            "taskOwner" : 1
         }, {
             "uid": 6,
             "derivedFrom" : 4,
@@ -232,7 +270,7 @@ All tasks on the server
             "plannedEndDate" : "2012/05/12",
             "description" : " painting second layer",
             "endDate" : "2012/03/11",
-            "taskOwner" : "Anelia Ninova"
+            "taskOwner" : 3
         }, {
             "uid": 7,
             "derivedFrom" : 5,
@@ -240,7 +278,7 @@ All tasks on the server
             "plannedEndDate" : "2012/03/08",
             "description" : "polishing",
             "endDate" : "2012/03/20",
-            "taskOwner" : "Anna Nikolova"
+            "taskOwner" : 1
         }, {
             "uid": 8,
             "derivedFrom" : 0,
@@ -248,7 +286,7 @@ All tasks on the server
             "plannedEndDate" : "2014/01/05",
             "description" : "practicing with Ivanka Blagoeva",
             "endDate" : "2014/01/04",
-            "taskOwner" : "Emil Shterev"
+            "taskOwner" : 6
         }, {
             "uid": 9,
             "derivedFrom" : 7,
@@ -256,7 +294,7 @@ All tasks on the server
             "plannedEndDate" : "2012/03/08",
             "description" : "shaping",
             "endDate" : "pending",
-            "taskOwner" : "Anna Nikolova"
+            "taskOwner" : 1
         }]
         
 ### Add task [POST]
@@ -268,7 +306,7 @@ All tasks on the server
             "plannedEndDate" : "2014/11/10",
             "description" : "whipping",
             "endDate" : "pending",
-            "taskOwner" : "Chavdar Rangelov"
+            "taskOwner" : 8
         }
 
 + Response 201 (application/json)
@@ -288,7 +326,7 @@ All tasks on the server
             "plannedEndDate" : "2012/05/09",
             "description" : "glancing",
             "endDate" : "2012/03/09",
-            "taskOwner" : "Anelia Ninova"
+            "taskOwner" : 3
         }
         
 ### Change task status [PUT]
