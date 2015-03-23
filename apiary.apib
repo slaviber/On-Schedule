@@ -278,6 +278,20 @@ All tasks on the server
         { "uid": 10 }
         
 ## Modify Tasks [/Tasks/{uid}]
+
+### Return particular task [GET]
+
++ Response 200 (application/json)
+
+        {
+            "uid": 3,
+            "derivedFrom" : 2,
+            "beginDate" : "2012/05/08",
+            "plannedEndDate" : "2012/05/09",
+            "description" : "glancing",
+            "endDate" : "2012/03/09",
+            "taskOwner" : "Anelia Ninova"
+        }
         
 ### Change task status [PUT]
 
