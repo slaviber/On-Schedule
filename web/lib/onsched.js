@@ -1,7 +1,7 @@
-﻿var mock = "http://private-anon-dd42dee46-onschedule.apiary-mock.com"
+﻿var mock = "http://private-c125b-onschedule.apiary-mock.com"
 
-function Participant(name, canModerate){
-    this.name = name;
+function Participant(uid, canModerate){
+    this.uid = uid;
     this.canModerate = canModerate;
 }
 
@@ -9,7 +9,7 @@ function Participant(name, canModerate){
 function map_participants(participant_array) {
     var res = [];
     for (var i = 0; i < participant_array.length; ++i) {
-        res[i] = new Participant(participant_array[i].name, participant_array[i].canModerate);
+        res[i] = new Participant(participant_array[i].uid, participant_array[i].canModerate);
     }
     return res;
 }
@@ -65,6 +65,7 @@ function get_all_groups() {
     });
     return temp_groups;
 }
+
 
 function post_group() {
     var temp_uid = new ID_resp;
@@ -216,6 +217,24 @@ function get_all_tasks() {
     return temp_tasks;
 }
 
+function get_task(task_uid) {
+    var task = new Task();
+    $.ajax({
+        type: "GET",
+        url: mock + "/Tasks/" + task_uid,
+        success: function (got) {
+            task.derivedFrom = got.derivedFrom;
+            task.beginDate = got.beginDate;
+            task.plannedEndDate = got.plannedEndDate;
+            task.description = got.description;
+            task.endDate = got.endDate;
+            task.taskOwner = got.taskOwner;
+            
+        }
+    });
+    return task;
+}
+
 function post_task() {
     var task_num = new ID_resp();
     $.ajax({
@@ -234,12 +253,11 @@ function post_task() {
     return task_num;
 }
 
-function put_task() {
+function mod_task(task_uid) {
     var update = new ID_resp();
     $.ajax({
         type: "PUT",
-        url: mock + "/Tasks",
-        uid  : 10,
+        url: mock + "/Tasks/" + task_uid,
         derivedFrom  : 0,
         description  : "whipping",
         endDate  : "2014/11/00",
@@ -253,11 +271,10 @@ function put_task() {
 }
 
 //needs schedule update!
-function delete_task() {
+function delete_task(task_uid) {
     $.ajax({
         type: "DELETE",
-        url: mock + "/Tasks",
-        uid: 10,
+        url: mock + "/Tasks/" + task_uid,
         success: function (ok) {
             alert("Task removed!");
 
@@ -280,7 +297,7 @@ function get_all_reports() {
 }
 
 
-var t, uid, update, prequest, sch, add, upd, link, tsk, cre, change, rep;
+var t, uid, update, prequest, sch, add, upd, link, tsk, cre, change, rep, gt;
 $(document).ready(function () {
     "use strict"
 
@@ -296,8 +313,9 @@ $(document).ready(function () {
     delete_schedule(3);
     tsk = get_all_tasks();
     cre = post_task();
-    change = put_task();
-    delete_task();
+    change = mod_task(3);
+    gt = get_task(3);
+    delete_task(3);
     rep = get_all_reports();
 
 });
@@ -316,4 +334,5 @@ $(document).ajaxStop(function () {
     console.log(cre);
     console.log(change);
     console.log(rep);
+    console.log(gt);
 });
