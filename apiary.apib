@@ -277,12 +277,16 @@ All tasks on the server
 
         { "uid": 10 }
         
+## Modify Tasks [/Tasks/{uid}]
+        
 ### Change task status [PUT]
+
++ Parameters
+    + uid (required, number, `3`) ... The group uid to modify
         
 + Request (application/json)
 
         { 
-            "uid": 10,
             "derivedFrom" : 0,
             "description" : "whipping",
             "endDate" : "2014/11/00"
@@ -293,10 +297,6 @@ All tasks on the server
         { "uid": 10, "updateErrorCode" : 0 }
         
 ### Remove task and autoupdate [DELETE]
-
-+ Request (application/json)
-
-        { "uid": 10 }
 
 + Response 204
         
