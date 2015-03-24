@@ -133,8 +133,10 @@ body #login-button{
 #group-box{
     width: 200px;
     height: 30px;
+    margin-bottom: 10px;
 }
 #new-group{
     width: 200px;
     height: 30px;
+    margin-top: 10px;
 }
