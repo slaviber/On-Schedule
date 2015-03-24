@@ -25,6 +25,7 @@ header{
     border-radius:6px;
     color: black;
     border: thick;
+    display: initial;
 }
 
 .clickable:hover{
@@ -39,6 +40,7 @@ header{
 }
 
 .hidden{
+    display: none;
     visibility: hidden;
 }
 
@@ -63,7 +65,6 @@ body #login-box{
     padding: 0px;
     text-align: center;
     width: 400px;
-    display: block;
     margin-left: auto;
     margin-right: auto;
     border-style: solid;
@@ -88,4 +89,52 @@ body #login-button{
 
 #log-menu{
     padding: 10px;
+}
+
+#admin-panel{
+    float: left;
+    list-style-type: none;
+    margin-top: 10px;
+    padding: 0;
+    color: white;
+    width: 200px;
+}
+
+#admin-panel > input{
+    background-color: white;
+    margin-top: 10px;
+    border-radius: 6px;
+    height: 30px;
+    width: 300px;
+}
+
+#group-window{
+    float: left;
+    border-style: solid;
+    border-width: 6px;
+    margin-left: 300px;
+    margin-top: 10px;
+}
+
+#group-create{
+    float left;
+    margin-top: 10px;
+    padding: 0;
+    color: #101010;
+    list-style-type: none;
+    margin-left: 350px;
+    width: 200px;
+    padding: 10px;
+    border-style: solid;
+    border-width: 1px;
+
+}
+
+#group-box{
+    width: 200px;
+    height: 30px;
+}
+#new-group{
+    width: 200px;
+    height: 30px;
 }

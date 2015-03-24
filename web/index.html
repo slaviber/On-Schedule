@@ -9,7 +9,7 @@
 <body>
     <header>
         On Schedule
-        <input class="clickable visible" type="button" value="Log in" id="log" onclick="click_log_in();"/>
+        <input class="clickable visible" type="button" value="Log in" id="log"/>
     </header>
 
     <div id="login-box" , class="hidden">
@@ -17,6 +17,24 @@
         <div id="log-menu"></div>
         <input class="clickable" type="button" value="Log In" id="log-begin" />
     </div>
+
+    <div id="admin-panel", class="hidden" >
+        <input class="clickable" type="button" value="All Groups" id="everything" />
+        <input class="clickable" type="button" value="Groups that you administrate" id="administrating" />
+        <input class="clickable" type="button" value="Groups that you participate to" id="participating" />
+        <input class="clickable" type="button" value="New group" id="create" />
+    </div>
+
+    <div id="group-window", class="hidden">
+
+    </div>
+
+    <form id="group-create" class="hidden">
+        <input type="text" placeholder="Cleaning Dirt Challenge" id="group-box" />
+        <input type="checkbox" value="Private group" checked="1" id="group-check"> Private group </input>
+        <input class="clickable" type="button" value="Create" id="new-group" />
+    </form>
+
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <!--<script src="js/bootstrap.min.js"></script>-->

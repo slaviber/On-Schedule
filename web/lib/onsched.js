@@ -1,4 +1,5 @@
 ﻿var mock = "http://private-c125b-onschedule.apiary-mock.com"
+var nonPersistentLogin;
 
 function Participant(uid, canModerate){
     this.uid = uid;
@@ -52,7 +53,7 @@ function ID_resp(uid, code) {
 
 const CODE_OK = 0;
 
-function get_all_groups() {
+function get_all_groups(callback) {
     var temp_groups = [];
     $.ajax({
         type: "GET",
@@ -61,13 +62,13 @@ function get_all_groups() {
             $.each(groups, function () {
                 temp_groups[this.uid] = new Group(this.creator, this.description, this.isPrivate, map_participants(this.participants));
             })
+            callback(temp_groups);
         }
     });
-    return temp_groups;
 }
 
 
-function post_group() {
+function post_group(callback, description, isPrivate, creator) {
     var temp_uid = new ID_resp;
     $.ajax({
         type: "POST",
@@ -78,9 +79,9 @@ function post_group() {
         success: function (new_id) {
             temp_uid.uid = new_id.uid;
             temp_uid.code = 0;
+            callback(temp_uid);
         }
     });
-    return temp_uid;
 }
 
 function put_participants(group_uid) {
@@ -115,7 +116,7 @@ function delete_group(group_uid) {
     });
 }
 
-function post_request(group_uid) {
+function post_request(group_uid, callback) {
     var temp_req = new ID_resp;
     $.ajax({
         type: "POST",
@@ -124,9 +125,9 @@ function post_request(group_uid) {
         success: function (sent) {
             temp_req.uid = sent.uid;
             temp_req.code = sent.requestErrorCode;
+            callback(temp_req);
         }
     });
-    return temp_req;
 }
 
 function get_all_schedules() {
@@ -306,12 +307,8 @@ function get_all_users(callback) {
     });
 }
 
-function click_log_in() {
-    get_all_users(log_in_menu);
-}
 
 function log_in_menu(ids) {
-    console.log(ids);
     update_page_visibility();
     var v = $("<select>", { id: "login-button" } );
     $.each(ids, function () {
@@ -324,46 +321,97 @@ function log_in_menu(ids) {
 function update_page_visibility() {
     $('#login-box').attr("class", "hidden");
     $('#log').attr("class", "hidden");
+    $('#admin-panel').attr("class", "hidden");
+    $('#group-window').attr("class", "hidden");
+    $('#group-create').attr("class", "hidden");
 }
 
+$("#log").click(function () {
+    get_all_users(log_in_menu);
+});
+
+$("#log-begin").click(function () {
+    nonPersistentLogin = $('#login-button').find(":selected").val();
+    update_page_visibility();
+    $('#admin-panel').attr("class", "visible");
+});
+
+$("#everything").click(function () {
+    get_all_groups(fill_groups);
+    update_page_visibility();
+    $('#admin-panel').attr("class", "visible");
+});
+
+$("#administrating").click(function () {
+    get_all_groups(fill_groups_for_admin);
+    update_page_visibility();
+    $('#admin-panel').attr("class", "visible");
+});
+
+$("#participating").click(function () {
+    get_all_groups(fill_groups);
+    update_page_visibility();
+    $('#admin-panel').attr("class", "visible");
+});
+
+function fill_groups(groups) {
+    var v = $("<table>");
+    var text = "<thead> <tr> <th> Group Name </th> <th> Owner </th> <th> Send Participation request </th> </tr>";
+    v.append(text);
+    $.each(groups, function () {
+        if ( this.creator != null ) {
+            var text = "<tr>" + "<td>" + this.description + "</td>" + "<td>" + $('#login-button option[value="' + this.creator + '"]').text() + "</td>" +
+                " <td>  <input type='text' value='Hello, may I join, please?'> <input class='clickable' type='button' value='Send' onclick='request(" + this.creator + ")'></td>" + "</tr>";
+            v.append(text);
+        }
+        
+    });
+    $('#group-window').attr("class", "visible").html(v);
+
+}
+
+function fill_groups_for_admin(groups) {
+    var v = $("<table>");
+    var text = "<thead> <tr> <th> Group Name </th> <th> Owner </th> <th> Info </th> </tr>";
+    v.append(text);
+    $.each(groups, function () {
+        if (this.creator != null && this.creator == nonPersistentLogin) {
+            var text = "<tr>" + "<td>" + this.description + "</td>" + "<td>" + $('#login-button option[value="' + this.creator + '"]').text() + "</td>" +
+                " <td> <input class='clickable' type='button' value='Details' onclick='info(" + this.creator + ")'></td>" + "</tr>";
+            v.append(text);
+        }
+
+    });
+    $('#group-window').attr("class", "visible").html(v);
+
+}
+
+
+function request(group_id) {
+    post_request(group_id, function (resp) {
+        alert("Sent request for group " + resp.uid + " And got status " + resp.code);
+    });
+}
+
+$("#create").click(function () {
+    update_page_visibility();
+    $('#admin-panel').attr("class", "visible");
+    $('#group-create').attr("class", "visible");
+
+});
+
+$("#new-group").click(function () {
+    post_group(function (resp) {
+        alert("Created group " + resp.uid + " And got status " + resp.code);
+    }, $('#group-box').text, $('#group-check').checked, $('#login-button option[value="' + nonPersistentLogin + '"]').text());
+
+});
 
 //var t, uid, update, prequest, sch, add, upd, link, tsk, cre, change, rep, gt;
 $(document).ready(function () {
     "use strict"
 
-    //t = get_all_groups();
-    //uid = post_group();
-    //update = put_participants(3);
-    //delete_group(3);
-    //prequest = post_request(3);
-    //sch = get_all_schedules();
-    //add = post_schedule();
-    //upd = put_schedule();
-    //link = put_task(3);
-    //delete_schedule(3);
-    //tsk = get_all_tasks();
-    //cre = post_task();
-    //change = mod_task(3);
-    //gt = get_task(3);
-    //delete_task(3);
-    //rep = get_all_reports();
+    
 
 
 });
-
-//$(document).ajaxStop(function () {
-//    console.log(t);
-//    console.log(uid);
-//    console.log(update);
-//    if (prequest.uid == 3 && prequest.code == CODE_OK) alert("SENT: OK!");
-//    else alert("SENT: FAIL!");
-//    console.log(sch);
-//    console.log(add);
-//    console.log(upd);
-//    console.log(link);
-//    console.log(tsk);
-//    console.log(cre);
-//    console.log(change);
-//    console.log(rep);
-//    console.log(gt);
-//});
