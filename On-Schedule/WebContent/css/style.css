@@ -1,4 +1,4 @@
-﻿body
+body
 {
 	margin: 0;
 	padding: 0;
@@ -149,6 +149,37 @@ hr {
     border-color: white;
     margin-bottom: 50px;
 }
+
+#dialog{
+    z-index: 11;
+    position: relative;
+    background-color: white;
+    opacity: 1;
+    margin-top: 200px;
+    padding: 0px;
+    max-width: 20em;
+    margin-left: auto;
+    margin-right: auto;
+    color: black;
+    font-size: medium;
+    border: solid;
+    border-width: 5px;
+    border-bottom-width: 0px;
+    border-color: white;
+    margin-bottom: 50px;
+    text-align: right;
+}
+
+#dialog #dia_content{
+	text-align: left;
+}
+
+#dia_content input{
+	display: block;
+	margin-bottom: 10px;
+}
+
+
 
 dl{
     margin-left: 10px;

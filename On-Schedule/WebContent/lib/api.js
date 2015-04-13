@@ -1,4 +1,4 @@
-var mock = "http://private-c125b-onschedule.apiary-mock.com"
+var mock = "http://localhost:8080/On-Schedule/rest"
 
 function Participant(uid, canModerate) {
     this.uid = uid;
@@ -14,7 +14,8 @@ function map_participants(participant_array) {
     return res;
 }
 
-function Group(creator, description, isPrivate, participants, uid) {
+function Group(name, creator, description, isPrivate, participants, uid) {
+    this.name = name;
     this.creator = creator;
     this.description = description;
     this.isPrivate = isPrivate;
@@ -64,8 +65,9 @@ function get_all_groups(callback) {
         type: "GET",
         url: mock + "/Groups",
         success: function (groups) {
+            console.log(groups);
             $.each(groups, function () {
-                temp_groups.push(new Group(this.creator, this.description, this.isPrivate, map_participants(this.participants), this.uid));
+                temp_groups.push(new Group(this.name, this.creator, this.description, this.isPrivate, map_participants(this.participants), this.uid));
             })
             callback(temp_groups);
         }
@@ -80,9 +82,27 @@ function get_group(callback, uid) { //should be absolutely fixed!
         url: mock + "/Groups",
         success: function (groups) {
             $.each(groups, function () {
-                temp_groups.push(new Group(this.creator, this.description, this.isPrivate, map_participants(this.participants), this.uid));
+                temp_groups.push(new Group(this.name, this.creator, this.description, this.isPrivate, map_participants(this.participants), this.uid));
             })
             callback(temp_groups[uid]);
+        }
+    });
+}
+
+function create_group(name, description, isPrivate, creator) {
+    var temp_uid = new ID_resp;
+    var ext = new Group(name, creator, description, isPrivate, null, 0);
+    console.log(ext);
+    $.ajax({
+        type: "POST",
+        url: mock + "/Groups",
+        contentType: 'application/json',
+        data: JSON.stringify(ext),
+        creator: creator,
+        success: function (new_id) {
+            temp_uid.uid = new_id.uid;
+            temp_uid.code = 0;
+            //callback(temp_uid); should call a dialog
         }
     });
 }

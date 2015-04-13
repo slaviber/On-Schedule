@@ -22,7 +22,7 @@ function load_groups(groups) {
         //if (value.isPrivate != true) { SERVER SIDE!
             var tr = $("<span/>");
             tr.append($("<hr/>"));
-            tr.append($("<p/>", { id: "group_para_name", text: "Lorem Ipsum Dolor Sit Amet" }));
+            tr.append($("<p/>", { id: "group_para_name", text: value.name }));
             tr.append($("<input/>", { id: "group_para_info", type: "button", value: "Details", onclick: "group_details(" + index + ");" }));
             tr.append($("<p/>", { id: "group_para_desc", text: value.description }));
             box.append(tr);
@@ -34,7 +34,6 @@ function load_groups(groups) {
 function group_details(uid) {
     make_visible($("#screen"));
     make_visible($("#group_overlay"));
-    $("#group_overlay").addClass("opened");
     get_group(disp_group_details, uid);
 
 
@@ -146,10 +145,8 @@ function group_user_admin(user) {
 
 $("#screen").click(function () {
     hide($("#screen"));
-    if($("#group_overlay").hasClass("opened")){
-        hide($("#group_overlay"));
-        $("#group_overlay").removeClass("opened").html("");
-    }
+    hide($("#group_overlay"));
+    hide($("#dialog"));
 }).children().click(function () {
     return false;
 });
@@ -216,6 +213,35 @@ function schedule_tasks_async(tasks) {
 
     newt.append(row);
 }
+
+$("#b_new_group").click(function(){
+    make_visible($("#screen"));
+    make_visible($("#dialog"));
+    var dia = $("#dia_content");
+    dia.html("");
+    dia.append($("<p/>").text("Group name:"));
+    dia.append($("<input/>", { type: "text", id: "group_create_name" }));
+    dia.append($("<hr/>"));
+    dia.append($("<p/>").text("Group description:"));
+    dia.append($("<input/>", { type: "text", id: "group_create_desc" }));
+    dia.append($("<hr/>"));
+    dia.append($("<p/>").text("Make private:"));
+    dia.append($("<input/>", { type: "checkbox", value: "false", id: "group_create_priv" }));
+
+})
+
+$("#dia_Deny").click(function(){
+    $("#screen").trigger("click");
+})
+
+$("#dia_OK").click(function () {
+    var name = $("#group_create_name").val();
+    var desc = $("#group_create_desc").val();
+    var priv = $("#group_create_priv").val();
+    var user = 1; //should be fixed
+    create_group(name, desc, priv, user);
+    $("#screen").trigger("click");
+})
 
 
 $(document).ready(function () {
