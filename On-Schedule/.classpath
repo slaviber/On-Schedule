@@ -46,5 +46,6 @@
 	<classpathentry kind="lib" path="C:/Users/Administrator/Documents/GitHub/On-Schedule/On-Schedule/WebContent/WEB-INF/lib/osgi-resource-locator-1.0.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Administrator/Documents/GitHub/On-Schedule/On-Schedule/WebContent/WEB-INF/lib/persistence-api-1.0.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Administrator/Documents/GitHub/On-Schedule/On-Schedule/WebContent/WEB-INF/lib/validation-api-1.1.0.Final.jar"/>
+	<classpathentry kind="con" path="org.eclipse.datatools.connectivity.jdt.DRIVERLIBRARY/Derby Client JDBC Driver"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -40,9 +40,11 @@ function group_details(uid) {
 }
 
 function disp_group_details(group) {
+    $("#group_overlay").html("");
+
     var name = $("<dl/>");
     name.append($("<dt/> ").text("Group Name:"));
-    name.append($("<dd/> ").text("Lorem Ipsum Dolor Sit Amet"));
+    name.append($("<dd/> ").text(group.name));
 
     $("#group_overlay").append(name).append($("<hr/>"));
 

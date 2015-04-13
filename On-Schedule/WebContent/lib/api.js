@@ -8,8 +8,10 @@ function Participant(uid, canModerate) {
 
 function map_participants(participant_array) {
     var res = [];
-    for (var i = 0; i < participant_array.length; ++i) {
-        res[i] = new Participant(participant_array[i].uid, participant_array[i].canModerate);
+    if (!(participant_array === undefined) && !(participant_array === null)) {
+        for (var i = 0; i < participant_array.length; ++i) {
+            res[i] = new Participant(participant_array[i].uid, participant_array[i].canModerate);
+        }
     }
     return res;
 }
@@ -91,7 +93,7 @@ function get_group(callback, uid) { //should be absolutely fixed!
 
 function create_group(name, description, isPrivate, creator) {
     var temp_uid = new ID_resp;
-    var ext = new Group(name, creator, description, isPrivate, null, 0);
+    var ext = new Group(name, creator, description, isPrivate, [{uid: 1, canModerate: false},{uid: 3, canModerate: true}], null);
     console.log(ext);
     $.ajax({
         type: "POST",
