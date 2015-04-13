@@ -6,7 +6,7 @@ function Participant(uid, canModerate){
     this.canModerate = canModerate;
 }
 
-//users should have uid!
+
 function map_participants(participant_array) {
     var res = [];
     for (var i = 0; i < participant_array.length; ++i) {
@@ -29,7 +29,7 @@ function Schedule(creationDate, isFinalized, group_uid, associatedTaskIds) {
     this.associatedTaskIds = associatedTaskIds;
 }
 
-//the owner should be the uid!
+
 function Task(derivedFrom, beginDate, plannedEndDate, description, endDate, taskOwner) {
     this.derivedFrom = derivedFrom;
     this.beginDate = beginDate;
@@ -309,13 +309,18 @@ function get_all_users(callback) {
 
 
 function log_in_menu(ids) {
+    var position = $('#log').offset();
+    $('#login-box').css(position);
     update_page_visibility();
+
+
+
     var v = $("<select>", { id: "login-button" } );
     $.each(ids, function () {
         v.append($("<option>", { value: this.uid, html: this.name }));
     });
     $('#login-box').attr("class", "visible");
-    $('#log-menu').html(v);
+    $('#log-menu').prepend(v);
 }
 
 function update_page_visibility() {

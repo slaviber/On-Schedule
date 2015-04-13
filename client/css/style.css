@@ -1,0 +1,197 @@
+﻿body
+{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font-size: small;
+	vertical-align: baseline;
+    font-family: Verdana;
+}
+
+header{
+    background-color: #101010;
+    font-size: xx-large;
+    font-weight: bolder;
+    color: white;
+}
+
+p{
+    margin: 0px;
+    padding: 0px;
+    display: inline-block;
+    vertical-align: bottom;
+}
+
+input[type="button"]:hover{
+    background: radial-gradient(blue, blue);
+}
+
+input[type="button"]:active{
+    background: linear-gradient(#00A, #00A);
+}
+
+input[type="button"] {
+    background-color: black;
+    color: white;
+    margin-bottom: 3px;
+    height: 30px;
+    border: none;
+}
+
+.hidden{
+    display: none;
+    visibility: hidden;
+}
+
+.visible{
+    visibility: visible;
+}
+
+#tab_groups, #tab_schedules{
+    font-size: large;
+    font-weight: bolder;
+}
+
+#group_head, #schedule_head{
+    background-color: #EEE;
+    color: black;
+    margin-bottom: 3px;
+    padding-top: 3px;
+    text-align: center;
+}
+
+hr {
+    background-color: blue;
+    color: blue;
+    display: block;
+    height: 3px;
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+#group_head #filters{
+    display: inline-block;
+    min-width: 27em;
+}
+
+#JASITP{
+    display: inline-block;
+    text-align: left;
+    vertical-align: bottom;
+    min-width: 29em;
+    font-size: medium;
+}
+
+#group_head input, #schedule_head input{
+    margin-right: 1%;
+}
+
+#group_body, #schedule_body{
+   margin: 10px;
+   max-width: 40em;
+   margin-left: auto;
+   margin-right: auto;
+}
+
+#schedule_control{
+    text-align: center;
+}
+
+#schedule_control input{
+    margin: 0.5em;
+}
+
+#group_body #group_para_name{
+    font-size: medium;
+    font-weight: normal;
+    vertical-align: sub;
+}
+
+#group_body #group_para_desc{
+    font-size: small;
+    font-weight: normal;
+    display: block;
+    text-indent: 2%;
+    font-style: italic;
+    padding: 10px;
+}
+
+#group_body #group_para_info{
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+#screen{
+    z-index: 10;
+	background-color: rgba(0, 0, 0, 0.7);
+	position:fixed; top:0px; left:0px; width:100%; height:100%; color:#FFFFFF; text-align:center; vertical-align:middle;
+    overflow: auto;
+}
+
+#group_overlay{
+    text-align: left;
+    z-index: 11;
+    position: relative;
+    background-color: white;
+    opacity: 1;
+    margin-top: 100px;
+    padding: 0px;
+    max-width: 44em;
+    margin-left: auto;
+    margin-right: auto;
+    color: black;
+    font-size: medium;
+    border: solid;
+    border-width: 5px;
+    border-bottom-width: 0px;
+    border-color: white;
+    margin-bottom: 50px;
+}
+
+dl{
+    margin-left: 10px;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    font-weight: bold;
+}
+
+dd{
+    font-size: small;
+    font-style: italic;
+    font-weight: normal;
+    padding-top: 5px;
+}
+
+#b_add_participant, #b_add_schedule{
+    margin-top: 1em;
+}
+.group_lists a, .group_lists p{
+    display: table;
+    color: black;
+    min-width: 1em;
+}
+
+.group_lists a:not(:first-child), .group_lists p:not(:first-child){
+    margin-top: 1em;
+}
+
+.group_lists a:hover{
+    color: blue;
+}
+
+#group_foot{
+    float: right;
+}
+
+#schedule_body table th{
+    font-size: small;
+    font-weight: lighter;
+    border: 3px solid blue;
+}
+
+
+#schedule_body table {
+    border-collapse: collapse;
+}

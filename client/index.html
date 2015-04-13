@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <title>The On-Schedule Project</title>
+</head>
+<body>
+    <header id="test">
+        <p>On Schedule</p>
+        <!--div?-->
+        <span id="anonymous", class="hidden">
+            <input type="button" value="log in" id="b_log_in" />
+            <input type="button" value="sign up" id="b_log_in" />
+        </span>
+        <span id="admin-panel" , class="hidden">
+            <input type="button" value="profile" id="b_profile" />
+            <input type="button" value="my schedules" id="b_schedules" />
+        </span>
+        <span id="info", class="hidden">
+            <input type="button" value="about" id="b_about" />
+        </span>
+    </header>
+    <hr />
+    <div id="tab_groups", class="visible">
+        <div id="group_head">
+            <p> Groups: </p>
+            <div id="filters">
+
+            </div>
+            <input type="button" value="Add filter" id="b_filter" />
+            <input type="button" value="Add group" id="b_new_group" />
+        </div>
+        <div id="group_body">
+
+        </div>
+    </div>
+
+    <div id="tab_schedules", class="hidden">
+        <div id="schedule_head">
+            <p> Schedule: </p>
+            <div id="JASITP"></div>
+            <input type="button" value="Delete" id="b_filter" />
+            <input type="button" value="Back to group" id="b_filter" />
+        </div>
+        <div id="schedule_body">
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            Task name
+                        </th>
+                        <th>
+                            Begin date
+                        </th>
+                        <th>
+                            End date
+                        </th>
+                        <th>
+                            Task finished
+                        </th>
+                        <th>
+                            Delete task
+                        </th>
+                        <th>
+                            Task owner
+                        </th>
+                        <th>
+                            Graph
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="schedule_table">
+
+                </tbody>
+                <tfoot id="table_new_task">
+
+                </tfoot>
+            </table>
+
+            <div id="schedule_panel">
+
+            </div>
+        </div>
+    </div>
+
+    <div id="screen" class="hidden">
+
+        <div id="group_overlay" class="hidden">
+
+        </div>
+
+    </div>
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="lib/style.js"></script>
+    <script src="lib/api.js"></script>
+
+</body>
+</html>

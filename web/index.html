@@ -8,22 +8,25 @@
 </head>
 <body>
     <header>
-        On Schedule
+        <p>On Schedule</p>
         <input class="clickable visible" type="button" value="Log in" id="log"/>
+
+        <div id="admin-panel" , class="hidden">
+            <input class="clickable" type="button" value="All Groups" id="everything" />
+            <input class="clickable" type="button" value="Groups that you administrate" id="administrating" />
+            <input class="clickable" type="button" value="Groups that you participate to" id="participating" />
+            <input class="clickable" type="button" value="New group" id="create" />
+        </div>
+
     </header>
 
     <div id="login-box" , class="hidden">
         <p id="login-text"> Login </p>
-        <div id="log-menu"></div>
-        <input class="clickable" type="button" value="Log In" id="log-begin" />
+        <div id="log-menu">
+            <input class="clickable" type="button" value="Log In" id="log-begin" />
+        </div>
     </div>
 
-    <div id="admin-panel", class="hidden" >
-        <input class="clickable" type="button" value="All Groups" id="everything" />
-        <input class="clickable" type="button" value="Groups that you administrate" id="administrating" />
-        <input class="clickable" type="button" value="Groups that you participate to" id="participating" />
-        <input class="clickable" type="button" value="New group" id="create" />
-    </div>
 
     <div id="group-window", class="hidden">
 
@@ -35,6 +38,13 @@
         <input class="clickable" type="button" value="Create" id="new-group" />
     </form>
 
+    <!--
+    <div id="box" class="visible" onclick="$('#box').attr('class', 'hidden'); $('#content').attr('class', 'hidden');">
+    </div>
+    <div id="content" class="visible">
+        text is here
+    </div>
+    -->
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <!--<script src="js/bootstrap.min.js"></script>-->
