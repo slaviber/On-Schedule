@@ -144,30 +144,14 @@ function get_users(callback, userids, extflag) {
     });
 }
 
-function get_all_schedules() { //this should not exist
-    var temp_schedules = [];
-    $.ajax({
-        type: "GET",
-        url: mock + "/Schedules",
-        success: function (schedules) {
-            $.each(schedules, function () {
-                temp_schedules.push(new Schedule(this.creationDate, this.isFinalized, this.group_uid, this.associatedTaskIds));
-            })
-        }
-    });
-    return temp_schedules;
-}
-
 function get_group_schedules(callback, groupid, extflag) { //should be absolutely fixed!
-    var temp_schedules = {};
+    var temp_schedule;
     $.ajax({
         type: "GET",
-        url: mock + "/Schedules",
+        url: mock + "/Schedules/" + groupid,
         success: function (schedules) {
-            $.each(schedules, function () {
-                if(this.group_uid == groupid)temp_schedules[this.uid] = new Schedule(this.creationDate, this.isFinalized, this.group_uid, this.associatedTaskIds, this.description, this.show_report, this.uid);
-            })
-            callback(temp_schedules, extflag);
+            //temp_schedule = new Schedule(this.creationDate, this.isFinalized, this.group_uid, this.associatedTaskIds, this.description, this.uid);
+            callback(schedules, extflag);
         }
     });
     return temp_schedules;
