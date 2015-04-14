@@ -169,9 +169,18 @@ hr {
     margin-bottom: 50px;
     text-align: right;
 }
+#dialog #dia_title{
+	text-align: center;
+	background-color: black;
+	color: white;
+	font-weight: normal;
+	font-size: medium;
+	padding: 3px;
+}
 
 #dialog #dia_content{
 	text-align: left;
+	font-size: small;
 }
 
 #dia_content input{

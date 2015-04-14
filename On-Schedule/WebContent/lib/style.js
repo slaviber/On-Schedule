@@ -77,12 +77,13 @@ function disp_group_details(group) {
             flag = true;
         }
     });
-    flag = false;
+    //flag = false;
     usrs = $("<dd/>", { id: "group_participants", class: "group_lists" });
 
     usrs.append($("<input/> ", { type: "button", value: "Add user", id: "b_add_participant", class: flag == true ? "hidden" : "visible" }));
     part.append(usrs);
-    get_users(group_users_async, group.participants, flag);
+    if(group.participants.length)get_users(group_users_async, group.participants, flag);
+    else usrs.prepend($("<p>-</p>"));
 
     $("#group_overlay").append(part).append($("<hr/>"));
 
@@ -219,6 +220,7 @@ function schedule_tasks_async(tasks) {
 $("#b_new_group").click(function(){
     make_visible($("#screen"));
     make_visible($("#dialog"));
+    $("#dia_title").text("Create new group");
     var dia = $("#dia_content");
     dia.html("");
     dia.append($("<p/>").text("Group name:"));
@@ -229,6 +231,15 @@ $("#b_new_group").click(function(){
     dia.append($("<hr/>"));
     dia.append($("<p/>").text("Make private:"));
     dia.append($("<input/>", { type: "checkbox", value: "false", id: "group_create_priv" }));
+    $("#dia_OK").click(function () {
+        var name = $("#group_create_name").val();
+        var desc = $("#group_create_desc").val();
+        var priv = $("#group_create_priv").val();
+        var user = 1; //should be fixed
+        create_group(name, desc, priv, user);
+        $("#screen").trigger("click");
+        $("#group_create_OK").attr("id","dia_OK");
+    })
 
 })
 
@@ -236,13 +247,28 @@ $("#dia_Deny").click(function(){
     $("#screen").trigger("click");
 })
 
-$("#dia_OK").click(function () {
-    var name = $("#group_create_name").val();
-    var desc = $("#group_create_desc").val();
-    var priv = $("#group_create_priv").val();
-    var user = 1; //should be fixed
-    create_group(name, desc, priv, user);
-    $("#screen").trigger("click");
+$("#b_sign_up").click(function () {
+    make_visible($("#screen"));
+    make_visible($("#dialog"));
+    $("#dia_title").text("Create new account");
+    var dia = $("#dia_content");
+    dia.html("");
+    dia.append($("<p/>").text("Username:"));
+    dia.append($("<input/>", { type: "text", id: "signup_username" }));
+    dia.append($("<hr/>"));
+    dia.append($("<p/>").text("Display name:"));
+    dia.append($("<input/>", { type: "text", id: "signup_name" }));
+    dia.append($("<hr/>"));
+    dia.append($("<p/>").text("Password:"));
+    dia.append($("<input/>", { type: "password", id: "signup_password" }));
+    $("#dia_OK").click(function () {
+        var username = $("#signup_username").val();
+        var name = $("#signup_name").val();
+        var password = $("#signup_password").val();
+        create_user(username, password, name);
+        $("#screen").trigger("click");
+        $("#group_create_OK").attr("id","dia_OK");
+    })
 })
 
 

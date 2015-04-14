@@ -76,17 +76,13 @@ function get_all_groups(callback) {
     });
 }
 
-function get_group(callback, uid) { //should be absolutely fixed!
-    var temp_groups = [];
-    var group = new Group();
+function get_group(callback, uid) {
     $.ajax({
         type: "GET",
-        url: mock + "/Groups",
-        success: function (groups) {
-            $.each(groups, function () {
-                temp_groups.push(new Group(this.name, this.creator, this.description, this.isPrivate, map_participants(this.participants), this.uid));
-            })
-            callback(temp_groups[uid]);
+        url: mock + "/Groups/" + uid,
+        success: function (group) {
+        		console.log(group);
+            	callback(new Group(group.name, group.creator, group.description, group.isPrivate, map_participants(group.participants), group.uid));
         }
     });
 }
@@ -100,30 +96,41 @@ function create_group(name, description, isPrivate, creator) {
         url: mock + "/Groups",
         contentType: 'application/json',
         data: JSON.stringify(ext),
-        creator: creator,
         success: function (new_id) {
             temp_uid.uid = new_id.uid;
             temp_uid.code = 0;
+            //callback(temp_uid); should call a dialog
+            console.log(temp_uid);
+        }
+    });
+}
+
+function create_user(username, password, name){
+	var temp_uid = new ID_resp;
+	var user = {username: username, password: password, name: name, uid: null};
+    $.ajax({
+        type: "POST",
+        url: mock + "/Users",
+        contentType: 'application/json',
+        data: JSON.stringify(user),
+        success: function (new_id) {
+            temp_uid.uid = new_id.uid;
+            temp_uid.code = 0;
+            console.log(temp_uid);
             //callback(temp_uid); should call a dialog
         }
     });
 }
 
-function get_all_users(callback) { //this should not exist
-    $.ajax({
-        type: "GET",
-        url: mock + "/Users",
-        success: function (users) {
-            callback(users);
-        }
-    });
-}
-
-function get_users(callback, userids, extflag) { //should be absolutely fixed!
+function get_users(callback, userids, extflag) {
     var usrs = [];
+    var ids = [];
+    $.each(userids, function(){
+    	ids.push(this.uid);
+    })
     $.ajax({
         type: "GET",
-        url: mock + "/Users",
+        url: mock + "/Users/" + JSON.stringify(ids),
         success: function (users) {
             $.each(users, function (ind, usr) {
                 $.each(userids, function (ind2, id) {

@@ -1,14 +1,15 @@
 package rest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import internal.Group;
 import internal.Response;
-
-import java.util.List;
+import internal.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -17,46 +18,34 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Path("Groups")
-public class GroupRest {
-	
-	static EntityManagerFactory factory = null;
-	
-	public GroupRest(){
-		if(factory == null){
-			try {
-				Class.forName("org.apache.derby.jdbc.ClientDriver");
-			} catch (ClassNotFoundException e) {
-				throw new IllegalStateException("No driver", e);
-			}
-			factory = Persistence.createEntityManagerFactory("On-Schedule");
-		}
-	}
+@Path("Users")
+public class UserRest {
+	static EntityManagerFactory factory = GroupRest.factory;
 	
 	@GET
-	@Path("/")
+	@Path("/[{ids}]")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Group> getGroups(){
+	public List<User> getUsers(@PathParam("ids") List<Long> ids){
 		//System.out.println(lg.isEmpty());
 		//return lg;
 
 		final EntityManager em = factory.createEntityManager();
 		try {
-			return em.createNamedQuery("allGroups", Group.class).getResultList();
+			//return em.createNamedQuery("someUsers", User.class).setParameter("ids", ids).getResultList();
+			
+			//should be fixed; due to wrong java version
+			List<User> allUsers = em.createNamedQuery("allUsers", User.class).getResultList();
+			List<User> gathered = new ArrayList<User>();
+			for(User u : allUsers){
+				for(Long id : ids){
+					if(u.getUid() == id){
+						gathered.add(u);
+					}
+				}
+			}
+			return gathered;
 		} finally {
 			em.close();
-		}
-	}
-	
-	@GET
-	@Path("/{uid}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Group getGroup(@PathParam("uid") long uid) {
-		final EntityManager em = factory.createEntityManager();
-		try {
-			return em.find(Group.class, uid);
-		} finally {
-				em.close();
 		}
 	}
 	
@@ -64,16 +53,13 @@ public class GroupRest {
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createGroup(Group group){
+	public Response createUser(User user){
 		
- 		// TODO set author by user session
- 		group.setCreator(1);
-
 		EntityManager em = factory.createEntityManager();
 		final EntityTransaction tx = em.getTransaction();
 		try {
 			tx.begin();
-			em.persist(group);
+			em.persist(user);
 			tx.commit();
 		} finally {
 			if (tx.isActive()) {
@@ -81,11 +67,10 @@ public class GroupRest {
 			}
 			em.close();
 		} 
-		
  		Response r = new Response();
- 		r.uid = group.getUid();
+ 		r.uid = user.getUid();
  		r.code = Response.code_OK;
 		return r;
- 		
 	}
+	
 }
