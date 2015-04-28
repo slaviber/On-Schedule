@@ -79,6 +79,7 @@ public class Group {
 		this.creator = creator;
 	}
 	public List<Participant> getParticipants() {
+		System.out.println(participants.size());
 		return participants;
 	}
 	public void setParticipants(List<Participant> participants) {

@@ -87,9 +87,28 @@ function get_group(callback, uid) {
     });
 }
 
-function create_group(name, description, isPrivate, creator) {
+function log_in(username, password){
+	$.ajax({
+        type: "POST",
+        url: "j_security_check",
+        dataType: "text",
+        data: {
+            j_username: username,
+            j_password: password
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log(textStatus, errorThrown);
+            return false;
+        },
+        success: function(){
+        	return true;
+        }
+    });
+}
+
+function create_group(name, description, isPrivate) {
     var temp_uid = new ID_resp;
-    var ext = new Group(name, creator, description, isPrivate, [{uid: 1, canModerate: false},{uid: 3, canModerate: true}], null);
+    var ext = new Group(name, 0, description, isPrivate, [], null);
     console.log(ext);
     $.ajax({
         type: "POST",
@@ -145,13 +164,17 @@ function get_users(callback, userids, extflag) {
 }
 
 function get_group_schedules(callback, groupid, extflag) { //should be absolutely fixed!
-    var temp_schedule;
+    var temp_schedules = {};
     $.ajax({
         type: "GET",
         url: mock + "/Schedules/" + groupid,
         success: function (schedules) {
-            //temp_schedule = new Schedule(this.creationDate, this.isFinalized, this.group_uid, this.associatedTaskIds, this.description, this.uid);
-            callback(schedules, extflag);
+        	if(schedules != null && schedules != undefined){
+        		$.each(schedules, function(){
+        			temp_schedules[this.uid] = new Schedule(this.creationDate, this.isFinalized, this.group_uid, this.associatedTaskIds, this.description, this.uid);
+        		})
+        	}
+    		callback(temp_schedules, extflag);
         }
     });
     return temp_schedules;

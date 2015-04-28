@@ -1,0 +1,26 @@
+<Context debug="9" reloadable="true">
+
+<Resource name="jdbc/On-Schedule" auth="Container"
+	type="javax.sql.DataSource"
+	username="admin"
+	password="admin"
+	maxActive="100"
+	maxIdle="20"
+	testOnBorrow="true"
+	driverClassName="org.apache.derby.jdbc.ClientDriver"
+	url="jdbc:derby://localhost:1527/On-Schedule;create=true"/>
+  <!--
+  	In real world projects password should be
+  	hashed and salted. It should not be in plain text!
+  -->
+	<Realm className="org.apache.catalina.realm.DataSourceRealm"
+	  dataSourceName="jdbc/On-Schedule"
+		userTable="Users"
+		userNameCol="username"
+		userCredCol="password"
+		localDataSource="true"
+		userRoleTable="Users" 
+		roleNameCol="roleGroup" /> 
+		<!-- we are using email as role for simplicity -->
+		
+</Context>

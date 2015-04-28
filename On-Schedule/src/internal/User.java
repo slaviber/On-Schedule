@@ -17,7 +17,9 @@ import javax.xml.bind.annotation.XmlTransient;
 	@NamedQuery(name = "getUserById", 
 	query = "SELECT u from Users u where u.uid like (:id)"),
 	@NamedQuery(name = "allUsers", 
-	query = "SELECT u from Users u")
+	query = "SELECT u from Users u"),
+	@NamedQuery(name = "getUserByUN", 
+	query = "SELECT u from Users u where u.username like (:UN)")
 })
 public class User {
 	
@@ -35,6 +37,10 @@ public class User {
 	@XmlTransient
 	@Column(nullable=false)
 	private String password;
+	
+	@XmlTransient
+	@Column
+	private String roleGroup;
 	
 	public long getUid() {
 		return uid;
@@ -59,5 +65,11 @@ public class User {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public String getRoleGroup() {
+		return roleGroup;
+	}
+	public void setRoleGroup(String roleGroup) {
+		this.roleGroup = roleGroup;
 	}
 }

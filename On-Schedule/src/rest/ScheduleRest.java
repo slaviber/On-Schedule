@@ -1,6 +1,9 @@
 package rest;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import internal.Schedule;
 
 import javax.persistence.EntityManager;
@@ -17,13 +20,17 @@ public class ScheduleRest {
 	@GET
 	@Path("/{uid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Schedule getSchedule(@PathParam("uid") long uid) {
-
-		
+	public List<Schedule> getSchedule(@PathParam("uid") long uid) {
 		final EntityManager em = factory.createEntityManager();
 		try {
-			em.createNamedQuery("allSchedules", Schedule.class).getResultList();
-			return null;
+			List<Schedule> all = em.createNamedQuery("allSchedules", Schedule.class).getResultList();
+			List<Schedule> generated = new ArrayList<>();
+			for(Schedule s : all){
+				if(s.getGroupUid() == uid){
+					generated.add(s);
+				}
+			}
+			return generated;
 		} finally {
 			em.close();
 		}

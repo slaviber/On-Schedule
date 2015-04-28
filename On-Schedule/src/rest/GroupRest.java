@@ -2,6 +2,7 @@ package rest;
 
 import internal.Group;
 import internal.Response;
+import internal.User;
 
 import java.util.List;
 
@@ -15,7 +16,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 
 @Path("Groups")
 public class GroupRest {
@@ -64,12 +67,23 @@ public class GroupRest {
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createGroup(Group group){
+	public Response createGroup(@Context SecurityContext security, Group group){
+		EntityManager em;
+ 		Response r = new Response();
+ 		r.uid = 0;
+ 		r.code = Response.code_UNAUTHORIZED;
+ 		if(security.getUserPrincipal() == null)return r;
 		
- 		// TODO set author by user session
- 		group.setCreator(1);
+		em = factory.createEntityManager();
+		User u;
+		try {
+			u = em.createNamedQuery("getUserByUN", User.class).setParameter("UN", security.getUserPrincipal().getName()).getSingleResult();
+		} finally {
+			em.close();
+		}
+ 		group.setCreator(u.getUid());
 
-		EntityManager em = factory.createEntityManager();
+		em = factory.createEntityManager();
 		final EntityTransaction tx = em.getTransaction();
 		try {
 			tx.begin();
@@ -81,8 +95,6 @@ public class GroupRest {
 			}
 			em.close();
 		} 
-		
- 		Response r = new Response();
  		r.uid = group.getUid();
  		r.code = Response.code_OK;
 		return r;

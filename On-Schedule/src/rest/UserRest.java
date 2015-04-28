@@ -50,7 +50,7 @@ public class UserRest {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createUser(User user){
-		
+		user.setRoleGroup("registered");
 		EntityManager em = factory.createEntityManager();
 		final EntityTransaction tx = em.getTransaction();
 		try {

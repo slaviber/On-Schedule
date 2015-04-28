@@ -23,7 +23,7 @@ function load_groups(groups) {
             var tr = $("<span/>");
             tr.append($("<hr/>"));
             tr.append($("<p/>", { id: "group_para_name", text: value.name }));
-            tr.append($("<input/>", { id: "group_para_info", type: "button", value: "Details", onclick: "group_details(" + index + ");" }));
+            tr.append($("<input/>", { id: "group_para_info", type: "button", value: "Details", onclick: "group_details(" + value.uid + ");" }));
             tr.append($("<p/>", { id: "group_para_desc", text: value.description }));
             box.append(tr);
         //}
@@ -122,6 +122,9 @@ function group_schedules_async(schedules, flag) {
         tag.text(text + this.description);
         add.prepend(tag);
     })
+    if(!schedules.length){
+        add.prepend($("<p>-</p>"));
+    }
     sched_cache = schedules;
 }
 
@@ -235,8 +238,7 @@ $("#b_new_group").click(function(){
         var name = $("#group_create_name").val();
         var desc = $("#group_create_desc").val();
         var priv = $("#group_create_priv").val();
-        var user = 1; //should be fixed
-        create_group(name, desc, priv, user);
+        create_group(name, desc, priv);
         $("#screen").trigger("click");
         $("#group_create_OK").attr("id","dia_OK");
     })
@@ -271,13 +273,49 @@ $("#b_sign_up").click(function () {
     })
 })
 
+$("#b_log_in").click(function () {
+    make_visible($("#screen"));
+    make_visible($("#dialog"));
+    $("#dia_title").text("Log in");
+    var dia = $("#dia_content");
+    dia.html("");
+    dia.append($("<p/>").text("Username:"));
+    dia.append($("<input/>", { type: "text", id: "signup_username" }));
+    dia.append($("<hr/>"));
+    dia.append($("<p/>").text("Password:"));
+    dia.append($("<input/>", { type: "password", id: "signup_password" }));
+    $("#dia_OK").click(function () {
+        var username = $("#signup_username").val();
+        var password = $("#signup_password").val();
+        if(log_in(username, password)){
+        	$.cookie("session", 2);
+        	signed = $.cookie("session");
+        	if(signed > 1){
+        		hide($("#anonymous"));
+        		make_visible($("#admin-panel"));
+        	}
+        }
+        else{
+        	alert("wrong credentials!");
+        }
+        $("#screen").trigger("click");
+        $("#group_create_OK").attr("id","dia_OK");
+    })
+})
+
 
 $(document).ready(function () {
     "use strict"
     update_page_visibility();
     signed = false;
-    make_visible($("#anonymous"));
     make_visible($("#tab_groups"));
     get_all_groups(load_groups);
-
+    if($.cookie("session") === undefined){
+    	//log_in("guest", "guest");
+    	$.cookie("session", 0);
+    }
+	signed = $.cookie("session");
+	if(signed == false){
+		make_visible($("#anonymous"));
+	}
 });

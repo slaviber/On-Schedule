@@ -4,6 +4,7 @@
 		<class>internal.Group</class>
 		<class>internal.User</class>
 		<class>internal.Participant</class>
+		<class>internal.Schedule</class>
 		<exclude-unlisted-classes></exclude-unlisted-classes>
 		<properties>
 			<property name="hibernate.show_sql" value="true" />
