@@ -71,6 +71,11 @@ hr {
     padding: 0;
 }
 
+#dia_content hr{
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
 #group_head #filters{
     display: inline-block;
     min-width: 27em;
@@ -134,7 +139,7 @@ hr {
     text-align: left;
     z-index: 11;
     position: relative;
-    background-color: white;
+    background-color: #EEE;
     opacity: 1;
     margin-top: 100px;
     padding: 0px;
@@ -144,7 +149,7 @@ hr {
     color: black;
     font-size: medium;
     border: solid;
-    border-width: 5px;
+    border-width: 1px;
     border-bottom-width: 0px;
     border-color: white;
     margin-bottom: 50px;
@@ -163,7 +168,7 @@ hr {
     color: black;
     font-size: medium;
     border: solid;
-    border-width: 5px;
+    border-width: 1px;
     border-bottom-width: 0px;
     border-color: white;
     margin-bottom: 50px;
@@ -181,6 +186,8 @@ hr {
 #dialog #dia_content{
 	text-align: left;
 	font-size: small;
+	line-height: 150%;
+	background-color: #EEE;
 }
 
 #dia_content input{

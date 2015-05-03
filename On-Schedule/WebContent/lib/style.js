@@ -100,7 +100,9 @@ function disp_group_details(group) {
     $("#group_overlay").append($("<hr/>"));
     if(signed){
         $("#group_overlay").append($("<input/> ", { type: "button", value: "Send participation request", id: "group_foot", class: flag == true ? "visible" : "hidden" }));
-        $("#group_overlay").append($("<input/> ", { type: "button", value: "delete group", id: "group_foot", class: flag == true ? "hidden" : "visible" }));
+    }
+    if(signed == group.creator){
+    	$("#group_overlay").append($("<input/> ", { type: "button", value: "delete group", id: "group_foot", class: flag == true ? "hidden" : "visible" }));
     }
 
 
@@ -225,11 +227,13 @@ $("#b_new_group").click(function(){
 	check_account(set_user);
 	if(signed < 2){
 		$("#b_log_in").trigger("click");
+		return;
 	}
 	//secure user check end
     make_visible($("#screen"));
     make_visible($("#dialog"));
     $("#dia_title").text("Create new group");
+    $("#dia_title").append($("<hr/>"));
     var dia = $("#dia_content");
     dia.html("");
     dia.append($("<p/>").text("Group name:"));
@@ -240,6 +244,7 @@ $("#b_new_group").click(function(){
     dia.append($("<hr/>"));
     dia.append($("<p/>").text("Make private:"));
     dia.append($("<input/>", { type: "checkbox", value: "false", id: "group_create_priv" }));
+    dia.append($("<hr/>"));
     $("#dia_OK").unbind('click');
     $("#dia_OK").click(function () {
         var name = $("#group_create_name").val();
@@ -259,7 +264,7 @@ $("#dia_Deny").click(function(){
 $("#b_sign_up").click(function () {
     make_visible($("#screen"));
     make_visible($("#dialog"));
-    $("#dia_title").text("Create new account");
+    $("#dia_title").text("Create new account").append($("<hr/>"));
     var dia = $("#dia_content");
     dia.html("");
     dia.append($("<p/>").text("Username:"));
@@ -270,6 +275,7 @@ $("#b_sign_up").click(function () {
     dia.append($("<hr/>"));
     dia.append($("<p/>").text("Password:"));
     dia.append($("<input/>", { type: "password", id: "signup_password" }));
+    dia.append($("<hr/>"));
     $("#dia_OK").unbind('click');
     $("#dia_OK").click(function () {
         var username = $("#signup_username").val();
@@ -284,7 +290,7 @@ $("#b_sign_up").click(function () {
 $("#b_log_in").click(function () {
     make_visible($("#screen"));
     make_visible($("#dialog"));
-    $("#dia_title").text("Log in");
+    $("#dia_title").text("Log in").append($("<hr/>"));
     var dia = $("#dia_content");
     dia.html("");
     dia.append($("<p/>").text("Username:"));
@@ -292,6 +298,7 @@ $("#b_log_in").click(function () {
     dia.append($("<hr/>"));
     dia.append($("<p/>").text("Password:"));
     dia.append($("<input/>", { type: "password", id: "signup_password" }));
+    dia.append($("<hr/>"));
     $("#dia_OK").unbind('click');
     $("#dia_OK").click(function () {
         var username = $("#signup_username").val();
@@ -301,7 +308,7 @@ $("#b_log_in").click(function () {
         	get_login_form(function(){
                 log_in(username, password, function(){
                 	check_account(set_user, function(){
-                		alert("Wrong credentials!");
+                		wrong_credentials_error();
                 	});//finally - set the correct user
                 });//try to log in
         	});//provokes security constraint error; server returns login form
@@ -311,10 +318,74 @@ $("#b_log_in").click(function () {
     })
 })
 
+$("#b_log_out").click(function () {
+    make_visible($("#screen"));
+    make_visible($("#dialog"));
+    $("#dia_title").text("Log out").append($("<hr/>"));
+    var dia = $("#dia_content");
+    dia.html("");
+    dia.append($("<p/>").text("Are you sure you want to log out?"));
+    dia.append($("<hr/>"));
+    $("#dia_OK").unbind('click');
+    $("#dia_OK").click(function () {
+        log_out(function(){
+        	get_login_form(function(){
+                check_account(set_user, function(){});//logs in the guest sccount
+        	});//provokes security constraint error; server returns login form
+        });//log out the user
+        $("#screen").trigger("click");
+        $("#group_create_OK").attr("id","dia_OK");
+    })
+})
+
+$("#b_about").click(function () {
+    make_visible($("#screen"));
+    make_visible($("#dialog"));
+    $("#dia_title").text("About");
+    $("#dia_title").append($("<hr/>"));
+    var dia = $("#dia_content");
+    dia.html("");
+    dia.append($("<p/>").text("The On-Schedule 2015"));
+    dia.append($("<p/>").text("Cyber Programming Class Project"));
+    about_url = "https://github.com/slaviber/On-Schedule"
+    dia.append($("<a/>", {href: about_url}).text(about_url).click(function(){
+    	window.location.href = about_url;
+    }));
+    dia.append($("<hr/>"));
+    $("#dia_OK").unbind('click');
+    $("#dia_OK").click(function () {
+        $("#screen").trigger("click");
+        $("#group_create_OK").attr("id","dia_OK");
+    })
+})
+
+function wrong_credentials_error(){
+    make_visible($("#screen"));
+    make_visible($("#dialog"));
+    $("#dia_title").text("Wrong credentials!").append($("<hr/>"));
+    var dia = $("#dia_content");
+    dia.html("");
+    dia.append($("<p/>").text("Wrong credentials!"));
+    dia.append($("<hr/>"));
+    $("#dia_OK").unbind('click');
+    $("#dia_OK").click(function () {
+        $("#screen").trigger("click");
+        $("#group_create_OK").attr("id","dia_OK");
+    })
+}
+
 function set_user(uid){
 	if(uid < 2)uid = 0;
 	signed = uid;
 	console.log("User: " + uid);
+	if(signed == false){
+		hide($("#admin-panel"));
+		make_visible($("#anonymous"));
+	}
+	else{
+		make_visible($("#admin-panel"));
+		hide($("#anonymous"));
+	}
 }
 
 
@@ -325,7 +396,4 @@ $(document).ready(function () {
     check_account(set_user);
     make_visible($("#tab_groups"));
     get_all_groups(load_groups);
-	//if(signed == false){
-		make_visible($("#anonymous"));
-	//}
 });
