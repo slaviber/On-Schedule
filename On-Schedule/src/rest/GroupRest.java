@@ -4,6 +4,7 @@ import internal.Group;
 import internal.Response;
 import internal.User;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -39,11 +40,10 @@ public class GroupRest {
 	@GET
 	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Group> getGroups(){
-		//System.out.println(lg.isEmpty());
-		//return lg;
-
+	public List<Group> getGroups(/*@Context final HttpServletResponse response*/) throws IOException{
 		final EntityManager em = factory.createEntityManager();
+		//response.setStatus(javax.ws.rs.core.Response.Status.ACCEPTED.getStatusCode());
+		//response.flushBuffer();
 		try {
 			return em.createNamedQuery("allGroups", Group.class).getResultList();
 		} finally {

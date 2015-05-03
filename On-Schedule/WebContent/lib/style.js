@@ -221,6 +221,12 @@ function schedule_tasks_async(tasks) {
 }
 
 $("#b_new_group").click(function(){
+	//secure user check
+	check_account(set_user);
+	if(signed < 2){
+		$("#b_log_in").trigger("click");
+	}
+	//secure user check end
     make_visible($("#screen"));
     make_visible($("#dialog"));
     $("#dia_title").text("Create new group");
@@ -234,6 +240,7 @@ $("#b_new_group").click(function(){
     dia.append($("<hr/>"));
     dia.append($("<p/>").text("Make private:"));
     dia.append($("<input/>", { type: "checkbox", value: "false", id: "group_create_priv" }));
+    $("#dia_OK").unbind('click');
     $("#dia_OK").click(function () {
         var name = $("#group_create_name").val();
         var desc = $("#group_create_desc").val();
@@ -263,6 +270,7 @@ $("#b_sign_up").click(function () {
     dia.append($("<hr/>"));
     dia.append($("<p/>").text("Password:"));
     dia.append($("<input/>", { type: "password", id: "signup_password" }));
+    $("#dia_OK").unbind('click');
     $("#dia_OK").click(function () {
         var username = $("#signup_username").val();
         var name = $("#signup_name").val();
@@ -284,38 +292,40 @@ $("#b_log_in").click(function () {
     dia.append($("<hr/>"));
     dia.append($("<p/>").text("Password:"));
     dia.append($("<input/>", { type: "password", id: "signup_password" }));
+    $("#dia_OK").unbind('click');
     $("#dia_OK").click(function () {
         var username = $("#signup_username").val();
         var password = $("#signup_password").val();
-        if(log_in(username, password)){
-        	$.cookie("session", 2);
-        	signed = $.cookie("session");
-        	if(signed > 1){
-        		hide($("#anonymous"));
-        		make_visible($("#admin-panel"));
-        	}
-        }
-        else{
-        	alert("wrong credentials!");
-        }
+        //acquire login form from server
+        log_out(function(){
+        	get_login_form(function(){
+                log_in(username, password, function(){
+                	check_account(set_user, function(){
+                		alert("Wrong credentials!");
+                	});//finally - set the correct user
+                });//try to log in
+        	});//provokes security constraint error; server returns login form
+        });//first log out - from the guest account
         $("#screen").trigger("click");
         $("#group_create_OK").attr("id","dia_OK");
     })
 })
+
+function set_user(uid){
+	if(uid < 2)uid = 0;
+	signed = uid;
+	console.log("User: " + uid);
+}
 
 
 $(document).ready(function () {
     "use strict"
     update_page_visibility();
     signed = false;
+    check_account(set_user);
     make_visible($("#tab_groups"));
     get_all_groups(load_groups);
-    if($.cookie("session") === undefined){
-    	//log_in("guest", "guest");
-    	$.cookie("session", 0);
-    }
-	signed = $.cookie("session");
-	if(signed == false){
+	//if(signed == false){
 		make_visible($("#anonymous"));
-	}
+	//}
 });

@@ -87,21 +87,57 @@ function get_group(callback, uid) {
     });
 }
 
-function log_in(username, password){
+function log_in(username, password, callback){
 	$.ajax({
         type: "POST",
         url: "j_security_check",
         dataType: "text",
+        crossDomain: false,
         data: {
             j_username: username,
             j_password: password
         },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.log(textStatus, errorThrown);
-            return false;
-        },
         success: function(){
-        	return true;
+        	callback();
+        }
+    });
+}
+
+function get_login_form(callback){
+	$.ajax({
+        type: "GET",
+        url: mock + "/Users/AccountDummy",
+        success: function(){
+        	callback();
+        }
+    });
+}
+
+function check_account(callback, errback){
+	$.ajax({
+        type: "GET",
+        url: mock + "/Users/AccountDummy",
+        success: function(ok){
+        	res = jQuery.parseJSON(ok);
+        	if(res.user === -1){
+        		errback();
+        		log_in("guest", "guest", function(){
+        			callback(1);
+        		})
+        	}
+        	else{
+        		callback(res.user);
+        	}
+        }
+    });
+}
+
+function log_out(callback){
+	$.ajax({
+        type: "DELETE",
+        url: mock + "/Users/AccountDummy",
+        success: function(){
+        	callback();
         }
     });
 }
