@@ -1,4 +1,4 @@
-var mock = "http://localhost:8080/On-Schedule/rest"
+var mock = "/On-Schedule/rest"
 
 function Participant(uid, canModerate) {
     this.uid = uid;
@@ -214,6 +214,22 @@ function get_group_schedules(callback, groupid, extflag) { //should be absolutel
         }
     });
     return temp_schedules;
+}
+
+function send_participation_request(callback, groupid){
+    $.ajax({
+        type: "POST",
+        url: mock + "/Groups/" + groupid + "/Request",
+        contentType: 'application/json',
+        success: function (id_resp) {
+        	callback(true);
+        	console.log(id_resp);
+        },
+        failure: function(id_resp){
+        	callback(false);
+        	console.log(id_resp);
+        }
+    });
 }
 
 function get_tasks(callback, ids) { //should be fixed

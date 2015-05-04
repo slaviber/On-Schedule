@@ -46,6 +46,16 @@
 	
     <security-constraint>
 		<web-resource-collection>
+			<web-resource-name>Requests</web-resource-name>
+			<url-pattern>/rest/Groups/*/Request</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>registered</role-name>
+		</auth-constraint>
+	</security-constraint>	
+	
+    <security-constraint>
+		<web-resource-collection>
 			<web-resource-name>Account</web-resource-name>
 			<url-pattern>/rest/Users/AccountDummy</url-pattern>
 		</web-resource-collection>

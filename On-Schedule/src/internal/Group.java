@@ -31,22 +31,18 @@ public class Group {
 	@Column(nullable=false)
 	private boolean isPrivate;
 	
-	  @ElementCollection(fetch=FetchType.EAGER)
-	  @CollectionTable(
-	        name="Participant"
-	  )
-	  private List<Participant> participants;
+	@ElementCollection(fetch=FetchType.EAGER)
+	@CollectionTable(name="Participant")
+	private List<Participant> participants;
+	  
+	
+	@ElementCollection(fetch=FetchType.EAGER)
+	@CollectionTable(name="Request")
+	private List<Long> requesting;
 	
 	@Id
 	@GeneratedValue
 	private long uid;
-	
-	private static long last_uid = 0;
-	
-	
-	public long getID(){
-		return last_uid++;
-	}
 	
 	public long getUid() {
 		return uid;
@@ -84,5 +80,11 @@ public class Group {
 	}
 	public void setParticipants(List<Participant> participants) {
 		this.participants = participants;
+	}
+	public List<Long> getRequesting() {
+		return requesting;
+	}
+	public void setRequesting(List<Long> requesting) {
+		this.requesting = requesting;
 	}
 }

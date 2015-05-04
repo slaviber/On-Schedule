@@ -1,6 +1,7 @@
 package rest;
 
 import internal.Group;
+import internal.Participant;
 import internal.Response;
 import internal.User;
 
@@ -61,6 +62,56 @@ public class GroupRest {
 		} finally {
 				em.close();
 		}
+	}
+	
+	@POST
+	@Path("/{uid}/Request")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response addParticipationrequest(@Context SecurityContext security,@PathParam("uid") long groupID) throws Exception{
+		EntityManager em;
+ 		Response r = new Response();
+ 		r.uid = 0;
+ 		r.code = Response.code_UNWANTED;
+		em = factory.createEntityManager();
+		User u;
+		Group g;
+		List<Long> requesting;
+		List<Participant> participants;
+		long userUID;
+		long creator;
+		try {
+			u = em.createNamedQuery("getUserByUN", User.class).setParameter("UN", security.getUserPrincipal().getName()).getSingleResult();
+			g = em.find(Group.class, groupID);
+			requesting = g.getRequesting();
+			participants = g.getParticipants();
+			userUID = u.getUid();
+			creator = g.getCreator();
+		} finally {
+			em.close();
+		}
+		
+		for(long i : requesting)if(i == userUID)throw new Exception();
+		for(Participant p : participants)if(p.getUid() == userUID)throw new Exception();
+		if(creator == userUID)throw new Exception();
+		requesting.add(userUID);
+		
+		em = factory.createEntityManager();
+		final EntityTransaction tx = em.getTransaction();
+		try {
+			tx.begin();
+			em.find(Group.class, groupID).setRequesting(requesting);
+			tx.commit();
+		} finally {
+			if (tx.isActive()) {
+				tx.rollback();
+			}
+			em.close();
+		} 
+ 		r.uid = groupID;
+ 		r.code = Response.code_OK;
+		return r;
+ 		
 	}
 	
 	@POST

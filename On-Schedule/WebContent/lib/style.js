@@ -73,14 +73,16 @@ function disp_group_details(group) {
 
     flag = false;
     $.each(group.participants, function () {
+    	//console.log(this.uid, signed, this.canModerate);
         if (!(this.uid == signed && this.canModerate) && !flag) {
             flag = true;
         }
     });
+    if(signed == group.creator)flag = true;
     //flag = false;
     usrs = $("<dd/>", { id: "group_participants", class: "group_lists" });
 
-    usrs.append($("<input/> ", { type: "button", value: "Add user", id: "b_add_participant", class: flag == true ? "hidden" : "visible" }));
+    usrs.append($("<input/> ", { type: "button", value: "Add user", id: "b_add_participant", class: flag == false ? "hidden" : "visible" }));
     part.append(usrs);
     if(group.participants.length)get_users(group_users_async, group.participants, flag);
     else usrs.prepend($("<p>-</p>"));
@@ -90,7 +92,7 @@ function disp_group_details(group) {
     var sche = $("<dl/>");
     sche.append($("<dt/> ").text("Schedules:"));
     var inbs = $("<dd/> ", { id: "group_schedules", class: "group_lists" });
-    inbs.append($("<input/> ", { type: "button", value: "Add schedule", id: "b_add_schedule", class: flag == true ? "hidden" : "visible" }));
+    inbs.append($("<input/> ", { type: "button", value: "Add schedule", id: "b_add_schedule", class: flag == false ? "hidden" : "visible" }));
     sche.append(inbs);
 
     $("#group_overlay").append(sche);
@@ -99,10 +101,14 @@ function disp_group_details(group) {
 
     $("#group_overlay").append($("<hr/>"));
     if(signed){
-        $("#group_overlay").append($("<input/> ", { type: "button", value: "Send participation request", id: "group_foot", class: flag == true ? "visible" : "hidden" }));
+        $("#group_overlay").append($("<input/> ", { type: "button", value: "Send participation request", id: "group_foot", class: flag == false ? "visible" : "hidden" }).click(function(){
+        	send_participation_request(function(succ){
+        		alert(succ);
+        	}, group.uid);
+        }));
     }
     if(signed == group.creator){
-    	$("#group_overlay").append($("<input/> ", { type: "button", value: "delete group", id: "group_foot", class: flag == true ? "hidden" : "visible" }));
+    	$("#group_overlay").append($("<input/> ", { type: "button", value: "delete group", id: "group_foot", class: flag == false ? "hidden" : "visible" }));
     }
 
 
@@ -393,7 +399,7 @@ $(document).ready(function () {
     "use strict"
     update_page_visibility();
     signed = false;
-    check_account(set_user);
+    check_account(set_user, function(){});
     make_visible($("#tab_groups"));
     get_all_groups(load_groups);
 });
