@@ -16,7 +16,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity(name="Schedules")
 @NamedQueries({
 	@NamedQuery(name = "allSchedules", 
-	query = "SELECT s from Schedules s")
+	query = "SELECT s from Schedules s"),
+	@NamedQuery(name = "groupSchedules", 
+	query = "SELECT s from Schedules s where s.group_uid = (:GID)")
 })
 public class Schedule {
 	
@@ -28,7 +30,7 @@ public class Schedule {
 	@Column(nullable=false)
 	private boolean isFinalized;
 	@Column(nullable=false)
-	private long groupUid;
+	private long group_uid;
 	@ElementCollection(fetch=FetchType.EAGER)
 	List<Integer> associatedTaskIds;
 	@Column(nullable=false)
@@ -46,17 +48,17 @@ public class Schedule {
 	public void setCreationDate(String creationDate) {
 		this.creationDate = creationDate;
 	}
-	public boolean isFinalized() {
+	public boolean getIsFinalized() {
 		return isFinalized;
 	}
-	public void setFinalized(boolean isFinalized) {
+	public void setIsFinalized(boolean isFinalized) {
 		this.isFinalized = isFinalized;
 	}
-	public long getGroupUid() {
-		return groupUid;
+	public long getGroup_uid() {
+		return group_uid;
 	}
-	public void setGroupUid(long groupUid) {
-		this.groupUid = groupUid;
+	public void setGroup_uid(long groupUid) {
+		this.group_uid = groupUid;
 	}
 	public List<Integer> getAssociatedTaskIds() {
 		return associatedTaskIds;

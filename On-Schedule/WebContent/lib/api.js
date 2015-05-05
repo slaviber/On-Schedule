@@ -16,22 +16,22 @@ function map_participants(participant_array) {
     return res;
 }
 
-function Group(name, creator, description, isPrivate, participants, uid) {
+function Group(name, creator, description, isPrivate, participants, requesting, uid) {
     this.name = name;
     this.creator = creator;
     this.description = description;
     this.isPrivate = isPrivate;
     this.participants = participants;
+    this.requesting = requesting;
     this.uid = uid;
 }
 
-function Schedule(creationDate, isFinalized, group_uid, associatedTaskIds, description, show_report, uid) {
+function Schedule(creationDate, isFinalized, group_uid, associatedTaskIds, description, uid) {
     this.creationDate = creationDate;
     this.isFinalized = isFinalized;
     this.group_uid = group_uid;
     this.associatedTaskIds = associatedTaskIds;
     this.description = description;
-    this.show_report = show_report;
     this.uid = uid;
 }
 
@@ -69,7 +69,7 @@ function get_all_groups(callback) {
         success: function (groups) {
             console.log(groups);
             $.each(groups, function () {
-                temp_groups.push(new Group(this.name, this.creator, this.description, this.isPrivate, map_participants(this.participants), this.uid));
+                temp_groups.push(new Group(this.name, this.creator, this.description, this.isPrivate, map_participants(this.participants), this.requesting, this.uid));
             })
             callback(temp_groups);
         }
@@ -82,7 +82,7 @@ function get_group(callback, uid) {
         url: mock + "/Groups/" + uid,
         success: function (group) {
         		console.log(group);
-            	callback(new Group(group.name, group.creator, group.description, group.isPrivate, map_participants(group.participants), group.uid));
+            	callback(new Group(group.name, group.creator, group.description, group.isPrivate, map_participants(group.participants), group.requesting, group.uid));
         }
     });
 }
@@ -144,7 +144,7 @@ function log_out(callback){
 
 function create_group(name, description, isPrivate) {
     var temp_uid = new ID_resp;
-    var ext = new Group(name, 0, description, isPrivate, [], null);
+    var ext = new Group(name, 0, description, isPrivate, [], [], null);
     console.log(ext);
     $.ajax({
         type: "POST",
@@ -157,6 +157,14 @@ function create_group(name, description, isPrivate) {
             //callback(temp_uid); should call a dialog
             console.log(temp_uid);
         }
+    });
+}
+
+function delete_group(uid){
+    $.ajax({
+        type: "DELETE",
+        url: mock + "/Groups/" + uid,
+        contentType: 'application/json'
     });
 }
 
@@ -216,6 +224,22 @@ function get_group_schedules(callback, groupid, extflag) { //should be absolutel
     return temp_schedules;
 }
 
+function add_schedule(groupid, name){
+	var ext = new Schedule(new Date(), false, groupid, [], name, null);
+    $.ajax({
+        type: "POST",
+        url: mock + "/Schedules",
+        contentType: 'application/json',
+        data: JSON.stringify(ext),
+        success: function (new_id) {
+            temp_uid.uid = new_id.uid;
+            temp_uid.code = 0;
+            //callback(temp_uid); should call a dialog
+            console.log(temp_uid);
+        }
+    });
+}
+
 function send_participation_request(callback, groupid){
     $.ajax({
         type: "POST",
@@ -229,6 +253,23 @@ function send_participation_request(callback, groupid){
         	callback(false);
         	console.log(id_resp);
         }
+    });
+}
+
+function delete_participation_request(groupid, userid){
+    $.ajax({
+        type: "DELETE",
+        url: mock + "/Groups/" + groupid + "/Request/" + userid,
+        contentType: 'application/json'
+    });
+}
+
+function add_participant(groupid, part){
+    $.ajax({
+        type: "POST",
+        url: mock + "/Groups/" + groupid + "/Participant",
+        contentType: 'application/json',
+        data: JSON.stringify(part)
     });
 }
 

@@ -1,6 +1,7 @@
 package rest;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import internal.Response;
@@ -41,7 +42,12 @@ public class UserRest {
 	@GET
 	@Path("/[{ids}]")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<User> getUsers(@PathParam("ids") List<Long> ids){
+	public List<User> getUsers(@PathParam("ids") String sIds){
+		String[] idsArr = sIds.split(","); 
+		List<Long> ids = new ArrayList<Long>();
+		for(String s : idsArr){
+			ids.add(Long.parseLong(s, 10));
+		}
 		final EntityManager em = factory.createEntityManager();
 		try {
 			return em.createNamedQuery("someUsers", User.class).setParameter("ids", ids).getResultList();

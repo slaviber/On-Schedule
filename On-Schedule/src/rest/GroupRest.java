@@ -13,6 +13,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -62,6 +63,86 @@ public class GroupRest {
 		} finally {
 				em.close();
 		}
+	}
+	
+	@DELETE
+	@Path("/{uid}")
+	public void deleteGroup(@PathParam("uid") long uid) {
+		final EntityManager em = factory.createEntityManager();
+		final EntityTransaction tx = em.getTransaction();
+		try {
+			tx.begin();
+			em.remove(em.find(Group.class, uid));
+			tx.commit();
+		} finally {
+			if (tx.isActive()) {
+				tx.rollback();
+			}
+			em.close();
+		} 
+	}
+	
+	@POST
+	@Path("/{uid}/Participant")
+	public void addParticipant(@PathParam("uid") long groupID, Participant part) throws Exception{
+		//TODO: only moderators should be able to add CHECKED participants
+		EntityManager em;
+		em = factory.createEntityManager();
+		Group g;
+		List<Participant> participants;
+		try {
+			g = em.find(Group.class, groupID);
+			participants = g.getParticipants();
+		} finally {
+			em.close();
+		}
+		
+		if(participants.contains(part))throw new Exception();
+		participants.add(part);
+		
+		em = factory.createEntityManager();
+		final EntityTransaction tx = em.getTransaction();
+		try {
+			tx.begin();
+			em.find(Group.class, groupID).setParticipants(participants);
+			tx.commit();
+		} finally {
+			if (tx.isActive()) {
+				tx.rollback();
+			}
+			em.close();
+		} 
+	}
+	
+	@DELETE
+	@Path("/{uid}/Request/{userUID}")
+	public void removeParticipationrequest(@PathParam("uid") long groupID, @PathParam("userUID") long userUID) throws Exception{
+		//TODO: only moderators should be able to remove requests
+		EntityManager em;
+		em = factory.createEntityManager();
+		Group g;
+		List<Long> requesting;
+		try {
+			g = em.find(Group.class, groupID);
+			requesting = g.getRequesting();
+		} finally {
+			em.close();
+		}
+		
+		requesting.remove(userUID);
+		
+		em = factory.createEntityManager();
+		final EntityTransaction tx = em.getTransaction();
+		try {
+			tx.begin();
+			em.find(Group.class, groupID).setRequesting(requesting);
+			tx.commit();
+		} finally {
+			if (tx.isActive()) {
+				tx.rollback();
+			}
+			em.close();
+		} 
 	}
 	
 	@POST

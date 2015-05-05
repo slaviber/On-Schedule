@@ -109,8 +109,8 @@ hr {
 }
 
 #group_body #group_para_name{
-    font-size: medium;
-    font-weight: normal;
+    font-size: large;
+    font-weight: lighter;
     vertical-align: sub;
 }
 
@@ -122,12 +122,12 @@ hr {
     font-style: italic;
     padding: 10px;
 }
-
+/*
 #group_body #group_para_info{
     margin-left: 20px;
     margin-top: 10px;
 }
-
+*/
 #screen{
     z-index: 10;
 	background-color: rgba(0, 0, 0, 0.7);
@@ -156,7 +156,7 @@ hr {
 }
 
 #dialog{
-    z-index: 11;
+    z-index: 12;
     position: relative;
     background-color: white;
     opacity: 1;

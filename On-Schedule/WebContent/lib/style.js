@@ -22,16 +22,19 @@ function load_groups(groups) {
         //if (value.isPrivate != true) { SERVER SIDE!
             var tr = $("<span/>");
             tr.append($("<hr/>"));
-            tr.append($("<p/>", { id: "group_para_name", text: value.name }));
-            tr.append($("<input/>", { id: "group_para_info", type: "button", value: "Details", onclick: "group_details(" + value.uid + ");" }));
+            tr.append($("<a/>", { id: "group_para_name", text: value.name }).attr("href", "#" + value.name).click(function(){
+            	group_details(value.uid);
+            }));
+            //tr.append($("<input/>", { id: "group_para_info", type: "button", value: "Details", onclick: "group_details(" + value.uid + ");" }));
             tr.append($("<p/>", { id: "group_para_desc", text: value.description }));
             box.append(tr);
         //}
     })
     box.append($("<hr/>"));
 }
-
+var curr_g_id;
 function group_details(uid) {
+	curr_g_id = uid;
     make_visible($("#screen"));
     make_visible($("#group_overlay"));
     get_group(disp_group_details, uid);
@@ -40,6 +43,10 @@ function group_details(uid) {
 }
 
 function disp_group_details(group) {
+	$("#sched_group").unbind('click');
+	$("#sched_group").click(function(){
+		group_details(group.uid);
+	})
     $("#group_overlay").html("");
 
     var name = $("<dl/>");
@@ -74,7 +81,7 @@ function disp_group_details(group) {
     flag = false;
     $.each(group.participants, function () {
     	//console.log(this.uid, signed, this.canModerate);
-        if (!(this.uid == signed && this.canModerate) && !flag) {
+        if ((this.uid == signed && this.canModerate) && !flag) {
             flag = true;
         }
     });
@@ -84,7 +91,14 @@ function disp_group_details(group) {
 
     usrs.append($("<input/> ", { type: "button", value: "Add user", id: "b_add_participant", class: flag == false ? "hidden" : "visible" }));
     part.append(usrs);
-    if(group.participants.length)get_users(group_users_async, group.participants, flag);
+    if(group.participants.length || group.requesting.length){
+    	if(group.participants.length)get_users(group_users_async, group.participants, flag);
+        var req_array = [];
+        $.each(group.requesting, function(){
+        	req_array.push({ uid: this })
+        })
+        if(group.requesting.length)get_users(group_requests_async, req_array, flag);
+    }
     else usrs.prepend($("<p>-</p>"));
 
     $("#group_overlay").append(part).append($("<hr/>"));
@@ -92,7 +106,9 @@ function disp_group_details(group) {
     var sche = $("<dl/>");
     sche.append($("<dt/> ").text("Schedules:"));
     var inbs = $("<dd/> ", { id: "group_schedules", class: "group_lists" });
-    inbs.append($("<input/> ", { type: "button", value: "Add schedule", id: "b_add_schedule", class: flag == false ? "hidden" : "visible" }));
+    inbs.append($("<input/> ", { type: "button", value: "Add schedule", id: "b_add_schedule", class: flag == false ? "hidden" : "visible" }).click(function(){
+    	group_new_schedule(group.uid);
+    }));
     sche.append(inbs);
 
     $("#group_overlay").append(sche);
@@ -108,7 +124,9 @@ function disp_group_details(group) {
         }));
     }
     if(signed == group.creator){
-    	$("#group_overlay").append($("<input/> ", { type: "button", value: "delete group", id: "group_foot", class: flag == false ? "hidden" : "visible" }));
+    	$("#group_overlay").append($("<input/> ", { type: "button", value: "delete group", id: "group_foot", class: flag == false ? "hidden" : "visible" }).click(function(){
+    		delete_group_menu(group.name, group.uid);
+    	}));
     }
 
 
@@ -118,19 +136,21 @@ var sched_cache, users_cache;
 
 function group_schedules_async(schedules, flag) {
     var add = $("#group_schedules");
+    var has_size = false;
     $.each(schedules, function () {
+    	has_size = true;
         var tag;
-        if (flag) tag = $("<p/>");
+        if (!flag) tag = $("<p/>");
         else tag = $("<a/>");
         tag.attr("href", "#");
-        if (!flag) tag.attr("onclick", "update_main_to_sched(); disp_schedule_details(" + this.uid + ")");
+        if (flag) tag.attr("onclick", "update_main_to_sched(); disp_schedule_details(" + this.uid + ")");
         var text;
         if (this.isFinalized) text = "finalized: ";
         else text = "ongoing: ";
         tag.text(text + this.description);
         add.prepend(tag);
     })
-    if(!schedules.length){
+    if(!has_size){
         add.prepend($("<p>-</p>"));
     }
     sched_cache = schedules;
@@ -144,7 +164,7 @@ function group_users_async(users, flag) {
         else text = "associated: ";
         text += this[0].name;
         var tag;
-        if (flag) tag = $("<p/>");
+        if (!flag) tag = $("<p/>");
         else tag = $("<a/>");
         tag.attr("href", "#");
         tag.text(text);
@@ -153,11 +173,72 @@ function group_users_async(users, flag) {
     users_cache = users;
 }
 
+function group_requests_async(users, flag) {
+    var add = $("#group_participants");
+    var name;
+    var id;
+    $.each(users, function () {
+        var text = "requested: "
+        text += this[0].name;
+        name = this[0].name;
+        id = this[1].uid;
+        console.log(this[1].uid);
+        var tag;
+        if (!flag) tag = $("<p/>");
+        else tag = $("<a/>");
+        tag.attr("href", "#");
+        tag.text(text);
+        if(flag)tag.click(function(){
+        	add_new_participant(name, curr_g_id, id);
+        })
+        add.prepend(tag);
+    })
+}
+
+function add_new_participant(name, groupid, userid){
+    make_visible($("#screen"));
+    make_visible($("#dialog"));
+    hide($("#group_overlay"));
+    $("#group_overlay").addClass("suppress");
+    $("#dia_title").text("Add new participant").append($("<hr/>"));
+    var dia = $("#dia_content");
+    dia.html("");
+    dia.append($("<p/>").text("Should " + name + " be a moderator?"));
+    dia.append($("<input/>", { type: "checkbox", value: "false", id: "make_new_mod" }).click(function(evt){
+    	evt.stopPropagation();
+    }));
+    dia.append($("<hr/>"));
+    dia.append($("<p/>").text("Ignore this request"));
+    dia.append($("<input/>", { type: "checkbox", value: "false", id: "ignore_request" }).click(function(evt){
+    	evt.stopPropagation();
+    }));
+    $("#dia_OK").unbind('click');
+    $("#dia_OK").click(function () {
+    	//add participant and remove request or remove request
+    	delete_participation_request(groupid, userid);
+    	var ignore = $("#ignore_request").is(":checked");
+    	var ismod = $("#make_new_mod").is(":checked");
+    	if(!ignore){
+    		console.log("kkk");
+    		add_participant(groupid, new Participant(userid, ismod));
+    	}
+    	$("#group_overlay").removeClass("suppress");
+        $("#screen").trigger("click");
+        $("#group_create_OK").attr("id","dia_OK");
+    })
+}
+
 function group_user_admin(user) {
     $("#group_creator").text(user[0][0].name);
 }
 
 $("#screen").click(function () {
+	if($("#group_overlay").hasClass("suppress")){
+		$("#group_overlay").removeClass("suppress");
+		hide($("#dialog"));
+		make_visible($("#group_overlay"));
+		return;
+	}
     hide($("#screen"));
     hide($("#group_overlay"));
     hide($("#dialog"));
@@ -343,6 +424,47 @@ $("#b_log_out").click(function () {
         $("#group_create_OK").attr("id","dia_OK");
     })
 })
+
+function delete_group_menu(name, uid){
+    make_visible($("#screen"));
+    make_visible($("#dialog"));
+    hide($("#group_overlay"));
+    $("#group_overlay").addClass("suppress");
+    $("#dia_title").text("Deleting group").append($("<hr/>"));
+    var dia = $("#dia_content");
+    dia.html("");
+    dia.append($("<p/>").text("Are you sure you want to delete group " + name + "?"));
+    dia.append($("<hr/>"));
+    $("#dia_OK").unbind('click');
+    $("#dia_OK").click(function () {
+    	delete_group(uid);
+    	$("#group_overlay").removeClass("suppress");
+        $("#screen").trigger("click");
+        $("#group_create_OK").attr("id","dia_OK");
+    })
+}
+
+function group_new_schedule(group_uid){
+	//add_schedule(group.uid, name);
+    make_visible($("#screen"));
+    make_visible($("#dialog"));
+    hide($("#group_overlay"));
+    $("#group_overlay").addClass("suppress");
+    $("#dia_title").text("Add new Schedule").append($("<hr/>"));
+    var dia = $("#dia_content");
+    dia.html("");
+    dia.append($("<p/>").text("Schedule description: "));
+    dia.append($("<input/>", { type: "text", id: "schedule_description" }));
+    dia.append($("<hr/>"));
+    $("#dia_OK").unbind('click');
+    $("#dia_OK").click(function () {
+    	var description = $("#schedule_description").val();
+    	add_schedule(group_uid, description);
+    	$("#group_overlay").removeClass("suppress");
+        $("#screen").trigger("click");
+        $("#group_create_OK").attr("id","dia_OK");
+    })
+}
 
 $("#b_about").click(function () {
     make_visible($("#screen"));
